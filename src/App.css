@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+:root {
+  --primary: #bc4123;
+  --secondary: #2b3452;
+}
+html {
+  font-size: 62.5%;
+}
+body {
+  margin: 0;
+  /* padding: 20px; */
+  height: 100vh;
+  /* background: var(--secondary); */
+}
+* {
+  /* color: #fff; */
+  margin: 0;
+}
+
+
+
+/* page content */
+main {
+  max-width: 1200px;
+  margin: 40px auto;
+  min-height: 100vh;
+}
+
+.dark-theme {
+  color: 'red' !important;
+  display: none;
+}
+.light-theme {
+  color: 'green' !important;
+  display: flex;
+}
+.light_theme_color svg path {
+  fill: #2764ff;
+}
+.dark_theme_color svg path {
+  fill: #85d1f0;
+}
+

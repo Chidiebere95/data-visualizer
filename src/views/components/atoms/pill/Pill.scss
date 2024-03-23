@@ -1,0 +1,20 @@
+.pill-component {
+  padding: 0.2rem 0.8rem;
+  border-radius: 0.8rem;
+  display: inline-block;
+  p {
+    // font-family: Inter;
+    font-size: 1.4rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 2.4rem;
+  }
+  &.success {
+    background-color: #25c26e14;
+    color: #25c26e;
+  }
+  &.danger {
+    background-color: #ff554a14;
+    color: #ff554a;
+  }
+}

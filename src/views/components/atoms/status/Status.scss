@@ -1,0 +1,16 @@
+.status-component {
+  width: 0.8rem;
+  height: 0.8rem;
+  min-width: 0.8rem;
+  min-height: 0.8rem;
+  display: inline-block;
+  border-radius: 50%;
+  overflow: hidden;
+
+  &.success {
+    background-color: #25c26e;
+  }
+  &.danger {
+    background-color: #ff554a;
+  }
+}

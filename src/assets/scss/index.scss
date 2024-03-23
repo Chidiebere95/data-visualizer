@@ -1,0 +1,174 @@
+@import 'font';
+@import 'colors';
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+$thic900: 'THICCCBOI-Black';
+$thic800: 'THICCCBOI-ExtraBold';
+$thic700: 'THICCCBOI-Bold';
+$thic600: 'THICCCBOI-SemiBold';
+$thic500: 'THICCCBOI-Medium';
+
+* {
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box; /* Opera/IE 8+ */
+}
+html {
+  font-size: 62.5%;
+}
+
+body {
+  background-color: $body-bg;
+}
+
+h1 {
+  font-size: 60px;
+  font-family: 'THICCCBOI-ExtraBold';
+  color: #24272a;
+}
+
+h2 {
+  font-size: 40px;
+  font-family: 'THICCCBOI-ExtraBold';
+  color: #24272a;
+}
+
+h3 {
+  font-size: 24px;
+  font-family: 'THICCCBOI-ExtraBold';
+  color: #24272a;
+}
+
+h4 {
+  font-size: 18px;
+  font-family: 'THICCCBOI-ExtraBold';
+  color: #24272a;
+}
+h5 {
+  font-size: 18px;
+  font-family: 'THICCCBOI-Medium';
+  color: #24272a;
+}
+p {
+  font-weight: 400;
+  font-size: 18px;
+  font-family: 'THICCCBOI-Medium';
+}
+label {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-family: 'THICCCBOI-Black';
+  color: #24272a;
+}
+a {
+  text-decoration: none !important;
+}
+button {
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #24272a;
+}
+
+.primary-btn {
+  width: 255px;
+  height: 61px;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: $pri-color1;
+  border-radius: 6px;
+  color: #fff;
+  font-family: $thic700;
+  font-size: 16px;
+
+  &.small-btn {
+    width: 175px;
+    height: 40px;
+  }
+
+  &:hover {
+    background-color: #fff;
+    color: $pri-color1;
+    border: 2px solid $pri-color1;
+  }
+}
+.filter-btn {
+  display: flex;
+  column-gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondary-btn {
+  width: 255px;
+  height: 61px;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 6px;
+  font-family: $thic700;
+  font-size: 16px;
+  border: 1px solid $pri-color1;
+  color: $pri-color1;
+
+  &.small-btn {
+    width: 175px;
+    height: 40px;
+  }
+
+  &:hover {
+    background-color: $pri-color1;
+    color: #fff;
+    border: 2px solid $pri-color1;
+  }
+}
+
+.pri-btn, // remember to change this name
+.sec-btn {
+  padding: 10px 20px;
+  border-radius: 30px;
+  background-color: #fff;
+  border: 0.69px solid #7a6d9f;
+  color: #40496b;
+  font-size: 14px;
+  font-family: $thic700;
+
+  &.smaller-text {
+    font-size: 12px;
+  }
+
+  &.added-width // was used for home community view all btn
+  {
+    width: 143px;
+  }
+
+  &:hover {
+    background-color: $pri-color1;
+    color: #fff;
+  }
+}
+
+.c-gap-5 {
+  column-gap: 5px;
+}
+
+.c-gap-10 {
+  column-gap: 10px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

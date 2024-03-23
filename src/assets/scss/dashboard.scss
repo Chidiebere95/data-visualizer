@@ -1,0 +1,280 @@
+@import 'colors';
+@import 'index';
+
+.dashboard-wrapper {
+  background-color: $body-bg;
+
+  @media screen and (max-width: '1000px') {
+    padding: 20px 0;
+  }
+  .container {
+    width: 70%;
+    margin: 0 auto;
+    padding: 3rem 0;
+    .dashboard-header {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 4rem;
+    }
+    .dashboard-box {
+      max-width: 90.7rem;
+      min-width: 100%;
+      width: 100%;
+      margin: 0 auto;
+      border: 1px solid #eaf1fa;
+      background-color: #fff;
+      box-shadow: 0px 5.969581604003906px 16.714828491210938px 0px #080f340a;
+      .box-header {
+        padding: 0 3.2rem;
+        height: 6.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0px 5.969581604003906px 16.714828491210938px 0px #080f340a;
+        .networks {
+          width: 22rem;
+          button {
+            width: 22rem;
+            height: 3.2rem;
+            padding: 0 1.6rem;
+            border-radius: 3rem;
+            overflow: hidden;
+            background-color: #f2f4f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            img {
+              height: 1.6rem;
+              width: 1.6rem;
+              border-radius: 50%;
+              overflow: hidden;
+              object-fit: cover;
+            }
+            p {
+              font-size: 1.6rem;
+            }
+            .img-con {
+              height: 1.6rem;
+              width: 1.6rem;
+            }
+            &.cursor-not-allowed {
+              cursor: not-allowed;
+              // pointer-events: none;
+            }
+          }
+        }
+        .accounts {
+          flex: 1 1 0%;
+          display: flex;
+          justify-content: center;
+          // background-color: rgba(0, 128, 0, 0.184);
+          button {
+            width: 44.4rem;
+            height: 4rem;
+            padding: 0 1.6rem;
+            border-radius: 3rem;
+            overflow: hidden;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            column-gap: 0.5rem;
+            &:hover {
+              background-color: $hover-bg-default;
+            }
+            img {
+              height: 2.4rem;
+              width: 2.4rem;
+              border-radius: 50%;
+              overflow: hidden;
+              object-fit: cover;
+            }
+            p {
+              font-size: 1.6rem;
+              font-family: $thic700;
+            }
+            .icon-con {
+              font-size: 1.6rem;
+            }
+          }
+        }
+        .more {
+          width: 22rem;
+          display: flex;
+          justify-content: flex-end;
+          button {
+            font-size: 1.6rem;
+          }
+        }
+      }
+      .box-content {
+        padding: 1.6rem;
+        .wallet-address {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 3rem;
+          button {
+            // width: 16rem;
+
+            height: 3.2rem;
+            padding: 0 1.6rem;
+            border-radius: 3rem;
+            overflow: hidden;
+            background-color: #0376c919;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: $color1;
+            font-size: 1.6rem;
+            column-gap: 1rem;
+            .img-con {
+              height: 1.6rem;
+              width: 1.6rem;
+            }
+          }
+        }
+        .account-balance {
+          display: flex;
+          justify-content: center;
+          // background-color: green;
+          column-gap: 0.7rem;
+          align-items: center;
+          margin-bottom: 3rem;
+          h2 {
+            font-family: $thic500;
+            font-size: 3rem;
+          }
+        }
+        .action-btns {
+          column-gap: 2rem;
+          margin-bottom: 4rem;
+          .btn {
+            // width: 6.8rem;
+            height: 6.8rem;
+            // background-color: rgba(0, 128, 0, 0.179);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            row-gap: 0.5rem;
+            cursor: pointer;
+
+            .icon-con {
+              width: 3.6rem;
+              height: 3.6rem;
+              border-radius: 50%;
+              background-color: $color1;
+              color: #fff;
+              font-size: 2rem;
+            }
+            p {
+              font-size: 1.4rem;
+              font-family: $thic600;
+            }
+          }
+        }
+        .tab-btns {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+
+          button {
+            font-family: $thic500;
+            font-size: 1.5rem;
+
+            border-bottom: 2px solid transparent;
+            padding: 2rem 0;
+
+            &.active {
+              border-bottom: 2px solid $color1;
+              color: $color1;
+            }
+          }
+        }
+        .tabs {
+          .tab-1 {
+            padding: 2rem 0;
+            min-height: 50rem;
+            .tokens {
+              margin-bottom: 3rem;
+              .token {
+                display: flex;
+                align-items: center;
+                column-gap: 1rem;
+                height: 8rem;
+                background-color: transparent;
+                cursor: pointer;
+                &:hover {
+                  background-color: $hover-bg-default;
+                }
+                cursor: pointer;
+                .img-con {
+                  width: 4rem;
+                  height: 4rem;
+                  border-radius: 50%;
+                  overflow: hidden;
+                  img {
+                    min-width: 100%;
+                    min-height: 100%;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                  }
+                }
+                .details {
+                  flex: 1 1 0%;
+                  display: flex;
+                  justify-content: space-between;
+                  .balance-con {
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 0.5rem;
+                    .balance {
+                      display: flex;
+                      column-gap: 0.5rem;
+                    }
+                  }
+                  .equivalent {
+                    display: flex;
+                    column-gap: 0.5rem;
+                  }
+                }
+                h5 {
+                  font-size: 1.6rem;
+                }
+              }
+            }
+            .btns {
+              display: flex;
+              flex-direction: column;
+              row-gap: 3rem;
+              align-items: flex-start;
+              button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                column-gap: 1rem;
+                font-family: $thic700;
+                font-size: 1.8rem;
+                color: $color1;
+                span {
+                  border-bottom: 2px solid transparent;
+                }
+                &:hover {
+                  span {
+                    border-bottom: 2px solid $color1;
+                  }
+                }
+              }
+            }
+          }
+          .tab-2,
+          .tab-3 {
+            padding: 2rem 0;
+            min-height: 30rem;
+          }
+        }
+      }
+    }
+  }
+}
