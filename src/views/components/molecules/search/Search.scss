@@ -42,6 +42,9 @@
     /* Most modern browsers support this now. */
     color: #a7b1bc;
   }
+  input:focus {
+    outline: none;
+  }
 
   .icon {
     min-width: 4rem;

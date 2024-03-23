@@ -3,6 +3,7 @@ import charts from '../../../../../assets/images/charts.png';
 import { FaCheck, FaExclamation } from 'react-icons/fa';
 
 import './Overview.scss';
+import Pill from '../../../atoms/pill/Pill';
 
 function Overview() {
   // const navigate = useNavigate();
@@ -17,23 +18,13 @@ function Overview() {
             <div className='detail'>
               <div className='value'>13</div>
               <div className='text'>
-                <div className='pill success'>
-                  <div className='icon'>
-                    <FaCheck />
-                  </div>
-                  <p>Online</p>
-                </div>
+                <Pill text='Online' variant='success' icon />
               </div>
             </div>
             <div className='detail'>
               <div className='value'>04</div>
               <div className='text'>
-                <div className='pill danger'>
-                  <div className='icon'>
-                    <FaExclamation />
-                  </div>
-                  <p>Away</p>
-                </div>
+                <Pill text='Away' variant='danger' icon />
               </div>
             </div>
           </div>

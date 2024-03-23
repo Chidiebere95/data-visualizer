@@ -98,6 +98,106 @@ function Teammates() {
                 <td>5hrs 43mins</td>
                 <td>5hrs 43mins</td>
               </tr>
+              <tr>
+                <td className='td-1'>
+                  <div className='td-content'>
+                    <div className='img'>
+                      <span>BS</span>
+                    </div>
+                    Brooklyn Simmons
+                  </div>
+                </td>
+                <td className='td-2'>
+                  <div className='td-content'>
+                    <Status variant='success' />
+                    <Pill text='Online' variant='success' />
+                  </div>
+                </td>
+                <td>kenzi.lawson@example.com</td>
+                <td>Today at 11:52pm</td>
+                <td>5hrs 43mins</td>
+                <td>5hrs 43mins</td>
+              </tr>
+              <tr>
+                <td className='td-1'>
+                  <div className='td-content'>
+                    <div className='img'>
+                      <span>BS</span>
+                    </div>
+                    Brooklyn Simmons
+                  </div>
+                </td>
+                <td className='td-2'>
+                  <div className='td-content'>
+                    <Status variant='success' />
+                    <Pill text='Online' variant='success' />
+                  </div>
+                </td>
+                <td>kenzi.lawson@example.com</td>
+                <td>Today at 11:52pm</td>
+                <td>5hrs 43mins</td>
+                <td>5hrs 43mins</td>
+              </tr>
+              <tr>
+                <td className='td-1'>
+                  <div className='td-content'>
+                    <div className='img'>
+                      <span>BS</span>
+                    </div>
+                    Brooklyn Simmons
+                  </div>
+                </td>
+                <td className='td-2'>
+                  <div className='td-content'>
+                    <Status variant='success' />
+                    <Pill text='Online' variant='success' />
+                  </div>
+                </td>
+                <td>kenzi.lawson@example.com</td>
+                <td>Today at 11:52pm</td>
+                <td>5hrs 43mins</td>
+                <td>5hrs 43mins</td>
+              </tr>
+              <tr>
+                <td className='td-1'>
+                  <div className='td-content'>
+                    <div className='img'>
+                      <span>BS</span>
+                    </div>
+                    Brooklyn Simmons
+                  </div>
+                </td>
+                <td className='td-2'>
+                  <div className='td-content'>
+                    <Status variant='success' />
+                    <Pill text='Online' variant='success' />
+                  </div>
+                </td>
+                <td>kenzi.lawson@example.com</td>
+                <td>Today at 11:52pm</td>
+                <td>5hrs 43mins</td>
+                <td>5hrs 43mins</td>
+              </tr>
+              <tr>
+                <td className='td-1'>
+                  <div className='td-content'>
+                    <div className='img'>
+                      <span>BS</span>
+                    </div>
+                    Brooklyn Simmons
+                  </div>
+                </td>
+                <td className='td-2'>
+                  <div className='td-content'>
+                    <Status variant='success' />
+                    <Pill text='Online' variant='success' />
+                  </div>
+                </td>
+                <td>kenzi.lawson@example.com</td>
+                <td>Today at 11:52pm</td>
+                <td>5hrs 43mins</td>
+                <td>5hrs 43mins</td>
+              </tr>
             </tbody>
           </table>
         </div>

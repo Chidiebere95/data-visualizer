@@ -1,7 +1,21 @@
 .pill-component {
   padding: 0.2rem 0.8rem;
   border-radius: 0.8rem;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  column-gap: 0.6rem;
+  .icon {
+    width: 1.6rem;
+    height: 1.6rem;
+    min-width: 1.6rem;
+    min-height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: red;
+    border-radius: 50%;
+    font-size: 0.8rem;
+  }
   p {
     // font-family: Inter;
     font-size: 1.4rem;
@@ -12,9 +26,22 @@
   &.success {
     background-color: #25c26e14;
     color: #25c26e;
+    .icon {
+      background-color: #25c26e;
+      color: #fff;
+      border: 2px solid #25c26e;
+    }
   }
   &.danger {
     background-color: #ff554a14;
     color: #ff554a;
+    .icon {
+      // background-color: #ff554a;
+      // color: #fff;
+      background-color: transparent;
+      color: #ff554a;
+      border: 2px solid #ff554a;
+    }
   }
 }
+

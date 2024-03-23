@@ -63,52 +63,6 @@
             font-family: $thic500;
             font-size: 1.2rem;
             color: #737a91;
-
-            .pill {
-              padding: 0.6rem;
-              border-radius: 0.8rem;
-              display: flex;
-              align-items: center;
-              column-gap: 0.6rem;
-              .icon {
-                width: 1.6rem;
-                height: 1.6rem;
-                min-width: 1.6rem;
-                min-height: 1.6rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: red;
-                border-radius: 50%;
-                font-size: 0.8rem;
-              }
-              p {
-                font-size: 1.2rem;
-                font-style: normal;
-                font-weight: 500;
-                line-height: 18px;
-              }
-              &.success {
-                background-color: #25c26e14;
-                color: #25c26e;
-                .icon {
-                  background-color: #25c26e;
-                  color: #fff;
-                  border: 2px solid #25c26e;
-                }
-              }
-              &.danger {
-                background-color: #ff554a14;
-                color: #ff554a;
-                .icon {
-                  // background-color: #ff554a;
-                  // color: #fff;
-                  background-color: transparent;
-                  color: #ff554a;
-                  border: 2px solid #ff554a;
-                }
-              }
-            }
           }
         }
       }
