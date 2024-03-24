@@ -10,6 +10,10 @@ interface IinitialState {
     status: string;
     data: any;
   };
+  getAllDataDaily: {
+    status: string;
+    data: any;
+  };
 }
 const initialState: IinitialState = {
   getAllTokens: {
@@ -17,6 +21,10 @@ const initialState: IinitialState = {
     data: [],
   },
   getTokenDetails: {
+    status: states.BASE,
+    data: [],
+  },
+  getAllDataDaily: {
     status: states.BASE,
     data: [],
   },
@@ -36,6 +44,16 @@ export const triggerGetTokenDetails = createAsyncThunk(
   async (params: any, thunkAPI) => {
     try {
       return await GeneralService.getTokenDetails(params);
+    } catch (e: any) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
+export const triggerGetAllDataDaily = createAsyncThunk(
+  'get-daily-data',
+  async (_, thunkAPI) => {
+    try {
+      return await GeneralService.getAllDataDaily();
     } catch (e: any) {
       return thunkAPI.rejectWithValue(e.message);
     }
@@ -76,6 +94,19 @@ const generalSlice = createSlice({
     builder.addCase(triggerGetTokenDetails.rejected, (state) => {
       state.getTokenDetails.status = states.ERROR;
       state.getTokenDetails.data = [];
+    });
+    //get daily data
+    builder.addCase(triggerGetAllDataDaily.pending, (state) => {
+      state.getAllDataDaily.status = states.LOADING;
+      state.getAllDataDaily.data = [];
+    });
+    builder.addCase(triggerGetAllDataDaily.fulfilled, (state: any, action) => {
+      state.getAllDataDaily.status = states.SUCCESSFUL;
+      state.getAllDataDaily.data = action.payload;
+    });
+    builder.addCase(triggerGetAllDataDaily.rejected, (state) => {
+      state.getAllDataDaily.status = states.ERROR;
+      state.getAllDataDaily.data = [];
     });
   },
 });

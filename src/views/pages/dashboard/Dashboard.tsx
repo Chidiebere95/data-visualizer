@@ -5,13 +5,19 @@ import './Dashboard.scss';
 import { RiCompassDiscoverLine } from 'react-icons/ri';
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import { IoLockOpenOutline } from 'react-icons/io5';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Overview from '../../components/tabs/dashboard/overview/Overview';
 import Teammates from '../../components/tabs/dashboard/teammates/Teammates';
 import Search from '../../components/molecules/search/Search';
+import { useDispatch, useSelector } from 'react-redux';
+import { triggerGetAllDataDaily } from '../../../features/general/general_slice';
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
+  const dispatch = useDispatch<any>();
 
+  useEffect(() => {
+    dispatch(triggerGetAllDataDaily());
+  }, []);
   return (
     <div className='dashboard-wrapper'>
       <div className='container'>

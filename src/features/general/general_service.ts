@@ -78,15 +78,15 @@ export default class PostsService {
       console.error('Error retrieving contract information:', error.message);
     }
   }
-  //  get all tokens
-  //   static async getAllTokens(data: any) {
-  //     const response: any = await get({
-  //       url: apiRoutes.getAllTokens,
-  //       data: { ...data },
-  //     });
-  //     if (response.status !== 'success') {
-  //       throw new Error('Something went wrong');
-  //     }
-  //     return response.data;
-  //   }
+  //  get token details
+  static async getAllDataDaily() {
+    const response: any = await get({
+      url: apiRoutes.getAllDataDaily,
+      baseURL: process.env.REACT_APP_URL || '',
+    });
+    if (!response.success) {
+      throw new Error('Something went wrong');
+    }
+    return response.data;
+  }
 }
