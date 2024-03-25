@@ -12,7 +12,13 @@ const Pill = ({ text, variant, icon }: IProps) => {
   return (
     <div
       className={`pill-component ${
-        variant === 'success' ? 'success' : variant === 'danger' ? 'danger' : ''
+        variant === 'success'
+          ? 'success'
+          : variant === 'danger'
+          ? 'danger'
+          : variant === 'info'
+          ? 'info'
+          : ''
       }`}
     >
       {icon && (

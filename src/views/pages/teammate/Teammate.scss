@@ -1,7 +1,7 @@
 @import '../../../assets/scss/colors.scss';
 @import '../../../assets/scss/index.scss';
 
-.dashboard-wrapper {
+.teammate-wrapper {
   background-color: $body-bg;
 
   @media screen and (max-width: '1000px') {
@@ -87,7 +87,6 @@
           background-color: #e5a889;
         }
       }
-     
     }
   }
 }

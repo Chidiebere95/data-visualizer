@@ -14,6 +14,8 @@ interface IinitialState {
     status: string;
     data: any;
   };
+  entries: any;
+  activeDay: any;
 }
 const initialState: IinitialState = {
   getAllTokens: {
@@ -28,27 +30,9 @@ const initialState: IinitialState = {
     status: states.BASE,
     data: [],
   },
+  entries: [],
+  activeDay: [],
 };
-export const triggerGetAllTokens = createAsyncThunk(
-  'get-all-tokens',
-  async (_, thunkAPI) => {
-    try {
-      return await GeneralService.getAllTokens();
-    } catch (e: any) {
-      return thunkAPI.rejectWithValue(e.message);
-    }
-  }
-);
-export const triggerGetTokenDetails = createAsyncThunk(
-  'get-token-details',
-  async (params: any, thunkAPI) => {
-    try {
-      return await GeneralService.getTokenDetails(params);
-    } catch (e: any) {
-      return thunkAPI.rejectWithValue(e.message);
-    }
-  }
-);
 export const triggerGetAllDataDaily = createAsyncThunk(
   'get-daily-data',
   async (_, thunkAPI) => {
@@ -64,37 +48,14 @@ const generalSlice = createSlice({
   name: 'general',
   initialState,
   reducers: {
-    resetGetTokenDetails: (state) => {
-      state.getTokenDetails = initialState.getTokenDetails;
+    setEntries: (state, action) => {
+      state.entries = action.payload;
+    },
+    setActiveDay: (state, action) => {
+      state.activeDay = action.payload;
     },
   },
   extraReducers: (builder) => {
-    //get all tokens
-    builder.addCase(triggerGetAllTokens.pending, (state) => {
-      state.getAllTokens.status = states.LOADING;
-      state.getAllTokens.data = [];
-    });
-    builder.addCase(triggerGetAllTokens.fulfilled, (state, action) => {
-      state.getAllTokens.status = states.SUCCESSFUL;
-      state.getAllTokens.data = action.payload;
-    });
-    builder.addCase(triggerGetAllTokens.rejected, (state) => {
-      state.getAllTokens.status = states.ERROR;
-      state.getAllTokens.data = [];
-    });
-    //get token details
-    builder.addCase(triggerGetTokenDetails.pending, (state) => {
-      state.getTokenDetails.status = states.LOADING;
-      state.getTokenDetails.data = [];
-    });
-    builder.addCase(triggerGetTokenDetails.fulfilled, (state: any, action) => {
-      state.getTokenDetails.status = states.SUCCESSFUL;
-      state.getTokenDetails.data = action.payload;
-    });
-    builder.addCase(triggerGetTokenDetails.rejected, (state) => {
-      state.getTokenDetails.status = states.ERROR;
-      state.getTokenDetails.data = [];
-    });
     //get daily data
     builder.addCase(triggerGetAllDataDaily.pending, (state) => {
       state.getAllDataDaily.status = states.LOADING;
@@ -112,4 +73,4 @@ const generalSlice = createSlice({
 });
 
 export default generalSlice.reducer;
-export const { resetGetTokenDetails } = generalSlice.actions;
+export const { setEntries, setActiveDay } = generalSlice.actions;

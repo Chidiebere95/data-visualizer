@@ -1,0 +1,58 @@
+@import '../../../../assets/scss/colors.scss';
+@import '../../../../assets/scss/index.scss';
+
+.dropdown-component {
+  .dropdown-wrapper {
+    position: relative;
+    .dropdown {
+      position: absolute;
+      top: 1rem;
+      left: 0;
+      width: 100%;
+
+      display: flex;
+      // width: 191px;
+      padding: 0px;
+      overflow: hidden;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+
+      border-radius: 12px;
+      border: 1px solid var(--Primary-Input-Border, #cfd9e4);
+      background: var(--Primary-Angel-White, #fff);
+      box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.08);
+      // background-color: yellow;
+      .option {
+        height: 4.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: left;
+        // background-color: green;
+        width: 100%;
+        padding: 0 1rem;
+        &:hover {
+          background-color: #f1f1f1;
+          cursor: pointer;
+        }
+        &.active {
+          background-color: #f1f1f1;
+        }
+        p {
+          // background-color: blue;
+          color: var(
+            --Primary-Rock-Black,
+            var(--Colors-Base-base-black, #1c2127)
+          );
+          /* Text/Medium/Regular */
+          // font-family: Inter;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 32px; /* 200% */
+        }
+      }
+    }
+  }
+}

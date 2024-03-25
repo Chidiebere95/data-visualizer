@@ -31,6 +31,9 @@
       color: #fff;
       border: 2px solid #25c26e;
     }
+    p {
+      color: #25c26e;
+    }
   }
   &.danger {
     background-color: #ff554a14;
@@ -42,6 +45,22 @@
       color: #ff554a;
       border: 2px solid #ff554a;
     }
+    p {
+      color: #ff554a;
+    }
+  }
+  &.info {
+    background-color: rgba(39, 100, 255, 0.08);
+    color: #2764ff;
+    .icon {
+      // background-color: #2764FF;
+      // color: #fff;
+      background-color: transparent;
+      color: #2764ff;
+      border: 2px solid #2764ff;
+    }
+    p {
+      color: #2764ff;
+    }
   }
 }
-

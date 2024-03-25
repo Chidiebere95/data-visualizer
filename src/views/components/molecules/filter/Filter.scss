@@ -1,0 +1,27 @@
+@import '../../../../assets/scss/colors.scss';
+@import '../../../../assets/scss/index.scss';
+
+.filter-component {
+  padding: 0.5rem 1.2rem;
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+  justify-content: space-between;
+  width: 12rem;
+  border-radius: 8px;
+  border: 1px solid var(--Primary-Input-Border, #cfd9e4);
+  background: var(--Primary-Angel-White, #fff);
+  p {
+    font-family: $thic700;
+    color: var(--Primary-Rock-Black, var(--Colors-Base-base-black, #1c2127));
+    text-align: justify;
+    // font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px; /* 150% */
+  }
+  span {
+    font-size: 1rem;
+  }
+}

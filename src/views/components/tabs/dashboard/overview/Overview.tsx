@@ -11,20 +11,29 @@ import { useContext, useEffect, useState } from 'react';
 import { triggerGetAllDataDaily } from '../../../../../features/general/general_slice';
 import moment from 'moment';
 import { AppContext } from '../../../../../context/Context';
-
-function Overview() {
+import { RootState } from '../../../../../store/store';
+interface IProps {
+  // activeDay: any[];
+  // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
+  // entries: any[];
+  // setEntries: React.Dispatch<React.SetStateAction<any[]>>;
+}
+function Overview({}: IProps) {
+  // console.log('activeday', activeDay);
   const { theme } = useContext(AppContext);
+  const { entries, activeDay } = useSelector(
+    (state: RootState) => state.general
+  );
 
   const dispatch = useDispatch<any>();
-  const { getAllDataDaily } = useSelector((state: any) => state.general);
+  const { getAllDataDaily } = useSelector((state: RootState) => state.general);
   // console.log('getAllDataDaily', getAllDataDaily);
   const [dailyTimeEstimate, setDailyTimeEstimate] = useState('');
   const [activeTeamMatesDaily, setActiveTeammatesDaily] = useState('');
   // temp
-  const [entries, setEntries] = useState<Array<any>>([]);
-  const [activeDay, setActiveDay] = useState<Array<any>>([]);
+
   const [barchartData, setBarchartData] = useState<any>([]);
-  const [totalTeammatesSupport, setTotalTeamatesSupport] = useState(20);
+  const totalTeammatesSupport = 35;
 
   const barChartData2 = {
     labels: [] as string[],
@@ -45,13 +54,9 @@ function Overview() {
   // }, []);
   useEffect(() => {
     if (getAllDataDaily.status === 'successful') {
-      const x = getAllDataDaily.data;
-      const entries = Object.entries(x);
-      setEntries(entries);
-      const last = entries[entries.length - 1];
-      setActiveDay(last);
-      // console.log('entries here', entries);
       // new
+      // console.log('entries', entries);
+
       const y = entries.map((item: any) => {
         const labels: any = [];
         const dataSets: any = [];
@@ -88,7 +93,7 @@ function Overview() {
         setBarchartData(barChartData2);
       });
     }
-  }, [getAllDataDaily]);
+  }, [getAllDataDaily, entries]);
 
   useEffect(() => {
     if (activeDay.length > 0) {
@@ -119,21 +124,11 @@ function Overview() {
     }
   }, [activeDay]);
 
-  console.log('getAllDataDaily.data', getAllDataDaily);
+  // console.log('barchartData', barchartData);
+  // console.log('getAllDataDaily', getAllDataDaily);
 
   return (
     <div className='overview-component'>
-      <div className='filters-wrapper'>
-        {entries.map((item: any, index: number) => (
-          <button
-            key={index}
-            className={`filter ${activeDay[0] === item[0] && 'active'}`}
-            onClick={() => setActiveDay(item)}
-          >
-            {item[0]}
-          </button>
-        ))}
-      </div>
       <div className='stats-wrapper'>
         <div className='stats'>
           <div className='stat'>
@@ -143,9 +138,9 @@ function Overview() {
             <div className='details'>
               <div className='detail'>
                 <div className='value'>{totalTeammatesSupport}</div>
-                <div className='text'>
+                {/* <div className='text'>
                   <Pill text='Active' variant='success' icon />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -157,13 +152,13 @@ function Overview() {
               <div className='detail'>
                 <div className='value'>{activeTeamMatesDaily}</div>
                 <div className='text'>
-                  <Pill text='Active' variant='success' icon />
+                  <Pill text='Signed in today' variant='success' icon />
                 </div>
               </div>
             </div>
           </div>
           <div className='stat'>
-            <p className='title'>Offline teamates</p>
+            <p className='title'>Inactive</p>
             <p className='info'>Inactive</p>
             <div className='details'>
               <div className='detail'>
@@ -171,7 +166,7 @@ function Overview() {
                   {totalTeammatesSupport - Number(activeTeamMatesDaily)}
                 </div>
                 <div className='text'>
-                  <Pill text='Inactive' variant='danger' icon />
+                  <Pill text='Not signed in' variant='danger' icon />
                 </div>
               </div>
             </div>
@@ -185,7 +180,7 @@ function Overview() {
               <div className='detail'>
                 <div className='value'>{dailyTimeEstimate}</div>
                 <div className='text'>
-                  <Pill text='Active' variant='success' icon />
+                  <Pill text='Across all teammates ' variant='info' icon />
                 </div>
               </div>
             </div>
@@ -196,7 +191,7 @@ function Overview() {
         <div className='incoming'>
           <p className='title'>Productivity Chart</p>
           <div className='charts-wrapper'>
-            <div className='legend-wrapper'>
+            {/* <div className='legend-wrapper'>
               <div className='legend'>
                 <div className='color online'></div>
                 <p className='text'>Online</p>
@@ -205,7 +200,7 @@ function Overview() {
                 <div className='color away'></div>
                 <p className='text'>Away</p>
               </div>
-            </div>
+            </div> */}
             <div className='chart'>
               {getAllDataDaily.status === 'base' ||
               getAllDataDaily.status === 'loading' ? (
@@ -242,7 +237,7 @@ function Overview() {
                                   crossAlign: 'far',
                                   padding: 10,
                                   color: `${
-                                    theme === 'light' ? '#1C2127' : '#FFFFFF'
+                                    theme === 'light' ? '#1C2127' : '#1C2127'
                                   }`,
                                   font: {
                                     size: 14,
@@ -255,7 +250,7 @@ function Overview() {
                                 },
                                 ticks: {
                                   color: `${
-                                    theme === 'light' ? '#737A91' : '#A7B1BC'
+                                    theme === 'light' ? '#1C2127' : '#1C2127'
                                   }`,
                                 },
                                 grid: {

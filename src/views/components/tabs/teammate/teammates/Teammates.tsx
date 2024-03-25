@@ -12,14 +12,11 @@ import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useNavigate, useParams } from 'react-router-dom';
 interface IProps {
-  // activeDay: any[];
-  // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
+  activeDay: any[];
+  setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
 }
-function Teammates({}: IProps) {
+function Teammates({ activeDay, setActiveDay }: IProps) {
   const navigate = useNavigate();
-  const { entries, activeDay } = useSelector(
-    (state: RootState) => state.general
-  );
   const params = useParams();
   console.log('params', params);
 
@@ -64,14 +61,12 @@ function Teammates({}: IProps) {
             </thead>
             <tbody>
               {tableData.map((staff: any, index: number) => {
-                console.log('staff', staff);
-
                 // mintime
-                const minTime = staff[1].timeLogs[0];
+                const minTime = staff[1].minTime;
                 const dateMinTime = moment(minTime);
                 const minTimeData = dateMinTime.format('h:mma');
                 // maxTime
-                const maxTime = staff[1].timeLogs[staff[1].timeLogs.length - 1];
+                const maxTime = staff[1].maxTime;
                 const dateMaxTime = moment(maxTime);
                 const maxTimeData = dateMaxTime.format('h:mma');
                 // todays session
@@ -90,7 +85,6 @@ function Teammates({}: IProps) {
 
                 // Format the result
                 const formattedDuration = `${hours}hrs, ${minutes}mins, ${seconds}s`;
-                // new
 
                 const milliseconds =
                   staff[1].lastMilliSecs + staff[1].milliSecsFromLastHour;
@@ -106,28 +100,20 @@ function Teammates({}: IProps) {
                   hours: hours2,
                   minutes: minutes2,
                 });
+
                 // Format the duration
                 const formattedDuration2 = `${duration.hours()}hrs ${duration.minutes()}mins`;
-
                 return (
                   <tr key={index}>
                     <td className='td-1'>
-                      <span
-                        onClick={() =>
-                          navigate(`teammates/${staff[0]}`, {
-                            state: {
-                              staff,
-                            },
-                          })
-                        }
-                      >
+                      <span onClick={() => navigate(`teammates/${staff[0]}`)}>
                         {staff[0]}
                       </span>
                     </td>
                     <td>{minTimeData}</td>
                     <td>{maxTimeData}</td>
                     <td>{formattedDuration2}</td>
-                    <td>5hrs 43mins</td>
+                    <td>5hrs</td>
                   </tr>
                 );
               })}
