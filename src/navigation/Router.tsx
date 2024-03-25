@@ -1,7 +1,7 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Dashboard from '../views/pages/dashboard/Dashboard';
 import Layout from '../views/layouts/Layout';
-import Teammate from '../views/pages/teammate/Teammate';
+import Teammate from '../views/components/tabs/dashboard/teammate/Teammate';
 
 function Router() {
   const router = createBrowserRouter([

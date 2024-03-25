@@ -4,7 +4,7 @@
 .overview-component {
   // background-color: green;
   // padding: 1rem;
- 
+
   .stats-wrapper {
     display: flex;
     align-items: center;
@@ -165,6 +165,7 @@
       box-shadow: 0px 5.969581604003906px 16.714828491210938px 0px #080f340a;
       padding: 2.4rem;
       border-radius: 1rem;
+      margin-bottom: 3rem;
       .title {
         font-family: $thic700;
         color: var(--Colors-Base-base-black, #1c2127);

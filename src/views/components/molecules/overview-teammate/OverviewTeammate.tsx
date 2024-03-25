@@ -5,13 +5,12 @@ import 'chart.js/auto';
 import { FaCheck, FaChevronRight, FaExclamation } from 'react-icons/fa';
 
 import './OverviewTeammate.scss';
-import Pill from '../../../atoms/pill/Pill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useContext, useEffect, useState } from 'react';
-import { triggerGetAllDataDaily } from '../../../../../features/general/general_slice';
+import { triggerGetAllDataDaily } from '../../../../features/general/general_slice';
 import moment from 'moment';
-import { AppContext } from '../../../../../context/Context';
-import { RootState } from '../../../../../store/store';
+import { AppContext } from '../../../../context/Context';
+import { RootState } from '../../../../store/store';
 import { useLocation, useNavigate } from 'react-router-dom';
 interface IProps {
   activeDay: any[];

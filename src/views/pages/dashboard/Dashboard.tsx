@@ -5,7 +5,6 @@ import { MdOutlineSettings } from 'react-icons/md';
 import './Dashboard.scss';
 import { RiCompassDiscoverLine } from 'react-icons/ri';
 import { HiOutlineUserGroup } from 'react-icons/hi';
-import { IoLockOpenOutline } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import Overview from '../../components/tabs/dashboard/overview/Overview';
 import Teammates from '../../components/tabs/dashboard/teammates/Teammates';
@@ -16,19 +15,16 @@ import {
   triggerGetAllDataDaily,
 } from '../../../features/general/general_slice';
 import { RootState } from '../../../store/store';
-import { FaChevronDown } from 'react-icons/fa';
 import Search from '../../components/molecules/search/Search';
 import Dropdown from '../../components/molecules/dropdown/Dropdown';
 import Filter from '../../components/molecules/filter/Filter';
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('teammates');
   const { getAllDataDaily } = useSelector((state: RootState) => state.general);
   const { entries, activeDay } = useSelector(
     (state: RootState) => state.general
   );
   const dispatch = useDispatch<any>();
-  // const [entries, setEntries] = useState<Array<any>>([]);
-  // const [activeDay, setActiveDay] = useState<Array<any>>([]);
   // intervals
   const [showDropdownIntervals, setShowDropdownIntervals] = useState(false);
   const [dropdownOptionsIntervals, setDropdownOptionsIntervals] = useState([
@@ -39,27 +35,24 @@ function Dashboard() {
     title: 'Daily',
     value: 'daily',
   });
+  // date
+  const [showDropdownDate, setShowDropdownDate] = useState(false);
+  const [dropdownOptionsDate, setDropdownOptionsDate] = useState<any>([]);
+  const [dropdownSelectedDate, setDropdownSelectedDate] = useState<any>({});
 
   // new
   useEffect(() => {
     if (getAllDataDaily.status === 'successful') {
       const data = getAllDataDaily.data;
-      console.log(data);
-
+      // console.log(data);
       const entries = Object.entries(data);
-      console.log(entries);
-
+      // console.log(entries);
       const last = entries[entries.length - 1];
-      // setEntries(entries);
-      // setActiveDay(last);
       dispatch(setEntries(entries));
       dispatch(setActiveDay(last));
     }
   }, [getAllDataDaily]);
-  // date
-  const [showDropdownDate, setShowDropdownDate] = useState(false);
-  const [dropdownOptionsDate, setDropdownOptionsDate] = useState<any>([]);
-  const [dropdownSelectedDate, setDropdownSelectedDate] = useState<any>({});
+
   useEffect(() => {
     if (entries.length > 0) {
       const dropdownOptionsDateTemp = entries.map((item: any) => {
@@ -69,8 +62,6 @@ function Dashboard() {
       setDropdownSelectedDate(
         dropdownOptionsDateTemp[dropdownOptionsDateTemp.length - 1]
       );
-
-      console.log('dropdownOptionsDateTemp', dropdownOptionsDateTemp);
     }
   }, [entries]);
   useEffect(() => {
@@ -78,19 +69,19 @@ function Dashboard() {
       const activeDayTemp = entries.find(
         (item: any) => item[0] === dropdownSelectedDate.value
       );
-      console.log('entries', entries);
-      console.log('dropdownSelectedDate', dropdownSelectedDate);
-      console.log('activeDayTemp', activeDayTemp);
+      // console.log('entries', entries);
+      // console.log('dropdownSelectedDate', dropdownSelectedDate);
+      // console.log('activeDayTemp', activeDayTemp);
 
       dispatch(setActiveDay(activeDayTemp));
     }
-  }, [dropdownSelectedDate, entries]);
+  }, [dropdownSelectedDate]);
 
   useEffect(() => {
     dispatch(triggerGetAllDataDaily());
   }, []);
 
-  // console.log('entries', entries);
+  // console.log('activeday', activeDay);
 
   return (
     <div className='dashboard-wrapper'>

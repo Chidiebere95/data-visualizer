@@ -33,26 +33,27 @@ function Overview({}: IProps) {
   // temp
 
   const [barchartData, setBarchartData] = useState<any>([]);
+  const [barchartDataTimelogs, setBarchartDataTimelogs] = useState<any>([]);
+  const [barchartDataAverage, setBarchartDataAverage] = useState<any>([]);
   const totalTeammatesSupport = 35;
 
-  const barChartData2 = {
-    labels: [] as string[],
-    datasets: [
-      {
-        data: [] as number[],
-        backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
-        borderColor: '#2764FF',
-        fill: false,
-        lineTension: 0.4,
-        radius: 0,
-      },
-    ],
-  };
-
-  // useEffect(() => {
-  //   dispatch(triggerGetAllDataDaily());
-  // }, []);
   useEffect(() => {
+    dispatch(triggerGetAllDataDaily());
+  }, []);
+  useEffect(() => {
+    const barchartDataAverage = {
+      labels: [] as string[],
+      datasets: [
+        {
+          data: [] as number[],
+          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          borderColor: '#2764FF',
+          fill: false,
+          lineTension: 0.4,
+          radius: 0,
+        },
+      ],
+    };
     if (getAllDataDaily.status === 'successful') {
       // new
       // console.log('entries', entries);
@@ -88,15 +89,15 @@ function Overview({}: IProps) {
       });
       // console.log('y', y);
       y.forEach((item: any) => {
-        barChartData2.labels.push(item.labels);
-        barChartData2.datasets[0].data.push(item.dataSets);
-        setBarchartData(barChartData2);
+        barchartDataAverage.labels.push(item.labels);
+        barchartDataAverage.datasets[0].data.push(item.dataSets);
+        setBarchartDataAverage(barchartDataAverage);
       });
     }
   }, [getAllDataDaily, entries]);
 
   useEffect(() => {
-    if (activeDay.length > 0) {
+    if (activeDay?.length > 0) {
       const updateStateFunc = () => {
         const arrayOfMillisecs: any = [];
         const x = activeDay[1];
@@ -124,7 +125,64 @@ function Overview({}: IProps) {
     }
   }, [activeDay]);
 
-  // console.log('barchartData', barchartData);
+  useEffect(() => {
+    const barChartData = {
+      labels: [] as string[],
+      datasets: [
+        {
+          data: [] as number[],
+          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          borderColor: '#2764FF',
+          fill: false,
+          lineTension: 0.4,
+          radius: 0,
+        },
+      ],
+    };
+    const barchartDataTimelogs = {
+      labels: [] as string[],
+      datasets: [
+        {
+          data: [] as number[],
+          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          borderColor: '#2764FF',
+          fill: false,
+          lineTension: 0.4,
+          radius: 0,
+        },
+      ],
+    };
+    if (activeDay?.length > 0) {
+      const usersTemp = Object.entries(activeDay?.[1]);
+      console.log('usersTemp', usersTemp);
+      let labels: any = [];
+      let datasets: any = [];
+      let labelsTimelog: any = [];
+      let datasetsTimelog: any = [];
+      usersTemp.forEach((item: any) => {
+        labels.push(item[0]);
+        labelsTimelog.push(item[0]);
+        datasets.push(
+          (item[1].lastMilliSecs + item[1].milliSecsFromLastHour) /
+            (1000 * 60 * 60)
+        );
+        datasetsTimelog.push(item[1].timeLogs.length);
+      });
+      barChartData.labels = labels;
+      barChartData.datasets[0].data = datasets;
+      // timelogs
+      barchartDataTimelogs.labels = labelsTimelog;
+      barchartDataTimelogs.datasets[0].data = datasetsTimelog;
+      setBarchartData(barChartData);
+      setBarchartDataTimelogs(barchartDataTimelogs);
+
+      console.log('labels', labels);
+      console.log('dataSets', datasets);
+    }
+  }, [activeDay]);
+
+  console.log('barchartData', barchartData);
+  console.log('barchartDataTimelogs', barchartDataTimelogs);
   // console.log('getAllDataDaily', getAllDataDaily);
 
   return (
@@ -191,6 +249,91 @@ function Overview({}: IProps) {
         <div className='incoming'>
           <p className='title'>Productivity Chart</p>
           <div className='charts-wrapper'>
+            <div className='chart'>
+              {getAllDataDaily.status === 'base' ||
+              getAllDataDaily.status === 'loading' ? (
+                <>Loading</>
+              ) : getAllDataDaily.status === 'successful' ? (
+                <>
+                  {barchartData.labels?.length > 0 && (
+                    <>
+                      {
+                        <Bar
+                          data={barchartData}
+                          options={{
+                            plugins: {
+                              legend: {
+                                display: false,
+                              },
+                              tooltip: {
+                                yAlign: 'bottom',
+                                titleColor: '#000',
+                                bodyColor: '#000',
+                                backgroundColor: 'whitesmoke',
+                                padding: 10,
+                              },
+                            },
+                            scales: {
+                              y: {
+                                border: {
+                                  display: false,
+                                },
+                                grid: {
+                                  display: false,
+                                },
+                                ticks: {
+                                  crossAlign: 'far',
+                                  padding: 10,
+                                  color: `${
+                                    theme === 'light' ? '#1C2127' : '#1C2127'
+                                  }`,
+                                  font: {
+                                    size: 14,
+                                  },
+                                },
+                              },
+                              x: {
+                                border: {
+                                  display: false,
+                                },
+                                ticks: {
+                                  color: `${
+                                    theme === 'light' ? '#1C2127' : '#1C2127'
+                                  }`,
+                                },
+                                grid: {
+                                  display: false,
+                                  color: `${
+                                    theme === 'light' ? '#F1F1F1' : '#373B3F'
+                                  }`,
+                                },
+                              },
+                            },
+                            layout: {
+                              padding: {
+                                top: 30,
+                                left: 20,
+                              },
+                            },
+                            indexAxis: 'x',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                          }}
+                          // height={360}
+                        />
+                      }
+                    </>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='incoming timelogs'>
+          <p className='title'>Timelogs Chart</p>
+          <div className='charts-wrapper'>
             {/* <div className='legend-wrapper'>
               <div className='legend'>
                 <div className='color online'></div>
@@ -207,11 +350,106 @@ function Overview({}: IProps) {
                 <>Loading</>
               ) : getAllDataDaily.status === 'successful' ? (
                 <>
-                  {barchartData.labels?.length > 0 && (
+                  {barchartDataTimelogs.labels?.length > 0 && (
                     <>
                       {
                         <Bar
-                          data={barchartData}
+                          data={barchartDataTimelogs}
+                          options={{
+                            plugins: {
+                              legend: {
+                                display: false,
+                              },
+                              tooltip: {
+                                yAlign: 'bottom',
+                                titleColor: '#000',
+                                bodyColor: '#000',
+                                backgroundColor: 'whitesmoke',
+                                padding: 10,
+                              },
+                            },
+                            scales: {
+                              y: {
+                                border: {
+                                  display: false,
+                                },
+                                grid: {
+                                  display: false,
+                                },
+                                ticks: {
+                                  crossAlign: 'far',
+                                  padding: 10,
+                                  color: `${
+                                    theme === 'light' ? '#1C2127' : '#1C2127'
+                                  }`,
+                                  font: {
+                                    size: 14,
+                                  },
+                                },
+                              },
+                              x: {
+                                border: {
+                                  display: false,
+                                },
+                                ticks: {
+                                  color: `${
+                                    theme === 'light' ? '#1C2127' : '#1C2127'
+                                  }`,
+                                },
+                                grid: {
+                                  display: false,
+                                  color: `${
+                                    theme === 'light' ? '#F1F1F1' : '#373B3F'
+                                  }`,
+                                },
+                              },
+                            },
+                            layout: {
+                              padding: {
+                                top: 30,
+                                left: 20,
+                              },
+                            },
+                            indexAxis: 'x',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                          }}
+                          // height={360}
+                        />
+                      }
+                    </>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='incoming timelogs'>
+          <p className='title'>Average Chart</p>
+          <div className='charts-wrapper'>
+            {/* <div className='legend-wrapper'>
+              <div className='legend'>
+                <div className='color online'></div>
+                <p className='text'>Online</p>
+              </div>
+              <div className='legend'>
+                <div className='color away'></div>
+                <p className='text'>Away</p>
+              </div>
+            </div> */}
+            <div className='chart'>
+              {getAllDataDaily.status === 'base' ||
+              getAllDataDaily.status === 'loading' ? (
+                <>Loading</>
+              ) : getAllDataDaily.status === 'successful' ? (
+                <>
+                  {barchartDataAverage.labels?.length > 0 && (
+                    <>
+                      {
+                        <Bar
+                          data={barchartDataAverage}
                           options={{
                             plugins: {
                               legend: {
