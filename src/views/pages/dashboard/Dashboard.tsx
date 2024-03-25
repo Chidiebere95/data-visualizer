@@ -119,37 +119,43 @@ function Dashboard() {
               <p>Teammates</p>
             </div>
           </div>
-          <div className='search-wrapper'>
-            <Search />
+          <div className='other'>
+            {activeTab === 'overview' && (
+              <div className='filters-wrapper'>
+                <Dropdown
+                  showDropdown={showDropdownIntervals}
+                  setShowDropdown={setShowDropdownIntervals}
+                  dropdownSelected={dropdownSelectedIntervals}
+                  setDropdownSelected={setDropdownSelectedIntervals}
+                  dropdownOptions={dropdownOptionsIntervals}
+                >
+                  <Filter
+                    setShowDropdown={setShowDropdownIntervals}
+                    dropdownSelected={dropdownSelectedIntervals}
+                  />
+                </Dropdown>
+                {dropdownOptionsDate.length > 0 && (
+                  <Dropdown
+                    showDropdown={showDropdownDate}
+                    setShowDropdown={setShowDropdownDate}
+                    dropdownSelected={dropdownSelectedDate}
+                    setDropdownSelected={setDropdownSelectedDate}
+                    dropdownOptions={dropdownOptionsDate}
+                  >
+                    <Filter
+                      setShowDropdown={setShowDropdownDate}
+                      dropdownSelected={dropdownSelectedDate}
+                    />
+                  </Dropdown>
+                )}
+              </div>
+            )}
+            {activeTab === 'teammates' && (
+              <div className='search-wrapper'>
+                <Search />
+              </div>
+            )}
           </div>
-        </div>
-        <div className='filters-wrapper'>
-          <Dropdown
-            showDropdown={showDropdownIntervals}
-            setShowDropdown={setShowDropdownIntervals}
-            dropdownSelected={dropdownSelectedIntervals}
-            setDropdownSelected={setDropdownSelectedIntervals}
-            dropdownOptions={dropdownOptionsIntervals}
-          >
-            <Filter
-              setShowDropdown={setShowDropdownIntervals}
-              dropdownSelected={dropdownSelectedIntervals}
-            />
-          </Dropdown>
-          {dropdownOptionsDate.length > 0 && (
-            <Dropdown
-              showDropdown={showDropdownDate}
-              setShowDropdown={setShowDropdownDate}
-              dropdownSelected={dropdownSelectedDate}
-              setDropdownSelected={setDropdownSelectedDate}
-              dropdownOptions={dropdownOptionsDate}
-            >
-              <Filter
-                setShowDropdown={setShowDropdownDate}
-                dropdownSelected={dropdownSelectedDate}
-              />
-            </Dropdown>
-          )}
         </div>
         {activeTab === 'overview' && <Overview />}
         {activeTab === 'teammates' && <Teammates />}
