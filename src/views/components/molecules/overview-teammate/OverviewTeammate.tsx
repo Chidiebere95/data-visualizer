@@ -13,22 +13,26 @@ import { AppContext } from '../../../../context/Context';
 import { RootState } from '../../../../store/store';
 import { useLocation, useNavigate } from 'react-router-dom';
 interface IProps {
-  activeDay: any[];
-  setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
-  entries: any[];
-  setEntries: React.Dispatch<React.SetStateAction<any[]>>;
+  // activeDay: any[];
+  // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
+  // entries: any[];
+  // setEntries: React.Dispatch<React.SetStateAction<any[]>>;
+  staff?: any;
+  setActiveTab?: React.Dispatch<React.SetStateAction<string>>;
 }
 function OverviewTeammate({
-  activeDay,
-  setActiveDay,
-  entries,
-  setEntries,
+  // activeDay,
+  // setActiveDay,
+  // entries,
+  // setEntries
+  staff,
+  setActiveTab,
 }: IProps) {
   const navigate = useNavigate();
   const { theme } = useContext(AppContext);
-  const { state } = useLocation();
+  // const { state } = useLocation();
   // console.log('state', state);
-  const { staff } = state;
+  // const { staff } = state;
 
   const dispatch = useDispatch<any>();
   const { getAllDataDaily } = useSelector((state: RootState) => state.general);
@@ -38,9 +42,23 @@ function OverviewTeammate({
   // temp
 
   const [barchartData, setBarchartData] = useState<any>([]);
+  const [barchartDataTimelogs, setBarchartDataTimelogs] = useState<any>([]);
   const [totalTeammatesSupport, setTotalTeamatesSupport] = useState(20);
 
   const barChartData2 = {
+    labels: [] as string[],
+    datasets: [
+      {
+        data: [] as number[],
+        backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+        borderColor: '#2764FF',
+        fill: false,
+        lineTension: 0.4,
+        radius: 0,
+      },
+    ],
+  };
+  const barChartDataTimelogs = {
     labels: [] as string[],
     datasets: [
       {
@@ -129,7 +147,7 @@ function OverviewTeammate({
   // new
   const [tableData, setTableData] = useState<Array<any>>([]);
 
-  // console.log('staff', staff);
+  console.log('staff', staff);
 
   const minTime = staff[1].timeLogs[0];
   const dateMinTime = moment(minTime);
@@ -173,32 +191,42 @@ function OverviewTeammate({
     usersData.forEach((userData: any) => {
       if (userData[0] === staff[0]) {
         // console.log('usersdata[0][1]', usersData[0][1]);
-
         tempArray.push(userData[1]);
       }
     });
   });
 
   useEffect(() => {
+    console.log('temp Array##########', tempArray);
+
     tempArray.forEach((item: any) => {
       console.log('item temp array', item);
       const label = item.maxTime.split('T')[0];
-      console.log('label', label);
+      const labelTimelogs = item.timeLogs.length;
+
+      console.log('item####', item.timeLogs.length);
       const dataSets =
         (item.lastMilliSecs + item.milliSecsFromLastHour) / (1000 * 60 * 60);
 
       barChartData2.labels.push(label);
       barChartData2.datasets[0].data.push(dataSets);
+      barChartDataTimelogs.labels.push(labelTimelogs);
+      barChartDataTimelogs.datasets[0].data.push(dataSets);
     });
+    console.log('barChartData2', barChartData2);
     setBarchartData(barChartData2);
-    console.log('tempArray', tempArray);
+    setBarchartDataTimelogs(barChartDataTimelogs);
   }, [tempArray.length]);
+  console.log('barChartData2', barChartData2);
+  console.log('barChartDataTimelogs', barChartDataTimelogs);
 
   return (
     <div className='overview-teammate-component'>
       <div className='charts'>
         <section className='header'>
-          <p className='title'>Teammates</p>
+          <p onClick={() => setActiveTab!('main')} className='title'>
+            Teammates
+          </p>
           <span>
             <FaChevronRight />
           </span>
@@ -211,10 +239,10 @@ function OverviewTeammate({
               <p className='title'>Email address:</p>
               <p className='value'>{staff[0]}</p>
             </div>
-            <div className='all-time-est'>
+            {/* <div className='all-time-est'>
               <p className='title'>All time estimate</p>
               <p className='value'>13hrs 42mins</p>
-            </div>
+            </div> */}
           </div>
         </section>
         <section className='charts-wrapper'>
@@ -301,6 +329,89 @@ function OverviewTeammate({
           </div>
         </section>
       </div>
+      <section className='charts-wrapper-2'>
+        <p className='title'>Timelogs chart</p>
+        <div className='chart'>
+          {getAllDataDaily.status === 'base' ||
+          getAllDataDaily.status === 'loading' ? (
+            <>Loading</>
+          ) : getAllDataDaily.status === 'successful' ? (
+            <>
+              {barchartData.labels?.length > 0 && (
+                <>
+                  {
+                    <Bar
+                      data={barchartDataTimelogs}
+                      options={{
+                        plugins: {
+                          legend: {
+                            display: false,
+                          },
+                          tooltip: {
+                            yAlign: 'bottom',
+                            titleColor: '#000',
+                            bodyColor: '#000',
+                            backgroundColor: 'whitesmoke',
+                            padding: 10,
+                          },
+                        },
+                        scales: {
+                          y: {
+                            border: {
+                              display: false,
+                            },
+                            grid: {
+                              display: false,
+                            },
+                            ticks: {
+                              crossAlign: 'far',
+                              padding: 10,
+                              color: `${
+                                theme === 'light' ? '#1C2127' : '#1C2127'
+                              }`,
+                              font: {
+                                size: 14,
+                              },
+                            },
+                          },
+                          x: {
+                            border: {
+                              display: false,
+                            },
+                            ticks: {
+                              color: `${
+                                theme === 'light' ? '#1C2127' : '#1C2127'
+                              }`,
+                            },
+                            grid: {
+                              display: false,
+                              color: `${
+                                theme === 'light' ? '#F1F1F1' : '#373B3F'
+                              }`,
+                            },
+                          },
+                        },
+                        layout: {
+                          padding: {
+                            top: 30,
+                            left: 20,
+                          },
+                        },
+                        indexAxis: 'x',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                      }}
+                      // height={360}
+                    />
+                  }
+                </>
+              )}
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      </section>
       <div className='activity-log'>
         <section className='header'>
           <p className='title'>Activity log</p>

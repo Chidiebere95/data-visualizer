@@ -1,5 +1,5 @@
 import React from 'react';
-import '.SingleLineLoader.scss';
+import './SingleLineLoader.scss';
 
 const SingleLineLoader = () => {
   return <div className='single-line-loader skeleton-loader'></div>;

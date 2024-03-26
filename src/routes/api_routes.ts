@@ -1,6 +1,6 @@
 const apiRoutes = {
-  getAllTokens: '/all-tokens',
   getAllDataDaily: '/getalldata/daily',
+  getAllDataMonthly: '/getalldata/monthly',
 };
 
 export default apiRoutes;

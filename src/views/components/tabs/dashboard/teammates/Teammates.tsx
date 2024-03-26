@@ -9,31 +9,44 @@ import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useNavigate, useParams } from 'react-router-dom';
 import Teammate from '../teammate/Teammate';
+import Search from '../../../molecules/search/Search';
+import OverviewTeammate from '../../../molecules/overview-teammate/OverviewTeammate';
+import { getTimeAgo } from '../../../../../utils/helpers';
 interface IProps {
   // activeDay: any[];
   // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
+  dropdownSelectedIntervals: {
+    title: string;
+    value: string;
+  };
 }
-function Teammates({}: IProps) {
+function Teammates({ dropdownSelectedIntervals }: IProps) {
   const navigate = useNavigate();
-  const { entries, activeDay } = useSelector(
+  const { entries, activeDay, activeMonth } = useSelector(
     (state: RootState) => state.general
   );
   const params = useParams();
-  console.log('params', params);
-
+  // console.log('params', params);
   const { getAllDataDaily } = useSelector((state: RootState) => state.general);
   const [tableData, setTableData] = useState<Array<any>>([]);
   useEffect(() => {
-    if (activeDay?.length! > 0) {
-      const data = activeDay[1];
-      const entries = Object.entries(data);
-      setTableData(entries);
-      console.log('data', data);
-      console.log('entries', entries);
+    if (dropdownSelectedIntervals.value === 'daily') {
+      if (activeDay?.length! > 0) {
+        const data = activeDay[1];
+        const entries = Object.entries(data);
+        setTableData(entries);
+      }
+    } else if (dropdownSelectedIntervals.value === 'monthly') {
+      if (activeMonth?.length! > 0) {
+        const data = activeMonth[1];
+        const entries = Object.entries(data);
+        setTableData(entries);
+      }
     }
-  }, [activeDay]);
-  console.log('activeday', activeDay);
+  }, [activeDay, activeMonth, dropdownSelectedIntervals]);
+  // console.log('activeday', activeDay);
   const [activeTab, setActiveTab] = useState('main');
+  const [staff, setStaff] = useState<any>([]);
 
   return (
     <>
@@ -42,6 +55,9 @@ function Teammates({}: IProps) {
           <div className='header'>
             <div className='title-wrapper'>
               <p className='title'>Teamates</p>
+            </div>
+            <div className='search-wrapper'>
+              <Search />
             </div>
           </div>
           <div className='table-wrapper'>
@@ -53,7 +69,7 @@ function Teammates({}: IProps) {
                     <th>First sign in</th>
                     <th>Last sign in</th>
                     <th>Today's session</th>
-                    <th>All time</th>
+                    <th>Activities</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -63,12 +79,24 @@ function Teammates({}: IProps) {
                     // mintime
                     const minTime = staff[1].timeLogs[0];
                     const dateMinTime = moment(minTime);
-                    const minTimeData = dateMinTime.format('h:mma');
+                    const minTimeData = dateMinTime.format(
+                      dropdownSelectedIntervals.value === 'daily'
+                        ? 'h:mma'
+                        : 'dddd, Do MMM, h:mma'
+                    );
+                    const minTimeDataDiff = getTimeAgo(minTime);
+                    // new
+
                     // maxTime
                     const maxTime =
                       staff[1].timeLogs[staff[1].timeLogs.length - 1];
                     const dateMaxTime = moment(maxTime);
-                    const maxTimeData = dateMaxTime.format('h:mma');
+                    const maxTimeData = dateMaxTime.format(
+                      dropdownSelectedIntervals.value === 'daily'
+                        ? 'h:mma'
+                        : 'dddd, Do MMM, h:mma'
+                    );
+                    const maxTimeDataDiff = getTimeAgo(maxTime);
                     // todays session
                     const startDateTime = moment(staff[1].minTime);
                     const endDateTime = moment(staff[1].maxTime);
@@ -110,22 +138,39 @@ function Teammates({}: IProps) {
                       <tr key={index}>
                         <td className='td-1'>
                           <span
-                            onClick={() =>
-                              navigate(`teammates/${staff[0]}`, {
-                                state: {
-                                  staff,
-                                },
-                              })
-                            }
-                            // onClick={(  ) => setActiveTab('details')}
+                            // onClick={() =>
+                            //   navigate(`teammates/${staff[0]}`, {
+                            //     state: {
+                            //       staff,
+                            //     },
+                            //   })
+                            // }
+                            onClick={() => {
+                              setActiveTab('details');
+                              setStaff(staff);
+                            }}
                           >
                             {staff[0]}
                           </span>
                         </td>
-                        <td>{minTimeData}</td>
-                        <td>{maxTimeData}</td>
+                        <td className='td-2'>
+                          <div className='td-content'>
+                            <p className='time'>{minTimeData}</p>
+                            {dropdownSelectedIntervals.value === 'monthly' && (
+                              <p className='time'>{minTimeDataDiff}</p>
+                            )}
+                          </div>
+                        </td>
+                        <td className='td-3'>
+                          <div className='td-content'>
+                            <p className='time'>{maxTimeData}</p>
+                            {dropdownSelectedIntervals.value === 'monthly' && (
+                              <p className='time'>{maxTimeDataDiff}</p>
+                            )}
+                          </div>
+                        </td>
                         <td>{formattedDuration2}</td>
-                        <td>5hrs 43mins</td>
+                        <td>{staff[1].timeLogs.length}</td>
                       </tr>
                     );
                   })}
@@ -135,7 +180,16 @@ function Teammates({}: IProps) {
           </div>
         </div>
       )}
-      {activeTab === 'details' && <Teammate />}
+      {activeTab === 'details' && (
+        <OverviewTeammate
+          staff={staff}
+          setActiveTab={setActiveTab}
+          // activeDay={activeDay}
+          // setActiveDay={setActiveDay}
+          // entries={entries}
+          // setEntries={setEntries}
+        />
+      )}
     </>
   );
 }

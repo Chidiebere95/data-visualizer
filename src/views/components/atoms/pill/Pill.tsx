@@ -1,6 +1,6 @@
 import React from 'react';
 import './Pill.scss';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaInfo } from 'react-icons/fa';
 
 interface IProps {
   text: string;
@@ -21,10 +21,22 @@ const Pill = ({ text, variant, icon }: IProps) => {
           : ''
       }`}
     >
-      {icon && (
-        <div className='icon'>
-          <FaCheck />
-        </div>
+      {variant !== 'info' && (
+        <>
+          {icon && (
+            <div className='icon'>
+              {variant === 'success' ? (
+                <FaCheck />
+              ) : variant === 'danger' ? (
+                <FaInfo />
+              ) : variant === 'info' ? (
+                <FaCheck />
+              ) : (
+                ''
+              )}
+            </div>
+          )}
+        </>
       )}
       <p>{text}</p>
     </div>

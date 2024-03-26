@@ -12,34 +12,39 @@ import { triggerGetAllDataDaily } from '../../../../../features/general/general_
 import moment from 'moment';
 import { AppContext } from '../../../../../context/Context';
 import { RootState } from '../../../../../store/store';
+import SingleLineLoader from '../../../loaders/single-line-loader/SingleLineLoader';
 interface IProps {
   // activeDay: any[];
   // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
   // entries: any[];
   // setEntries: React.Dispatch<React.SetStateAction<any[]>>;
+  dropdownSelectedIntervals: {
+    title: string;
+    value: string;
+  };
 }
-function Overview({}: IProps) {
+function Overview({ dropdownSelectedIntervals }: IProps) {
   // console.log('activeday', activeDay);
   const { theme } = useContext(AppContext);
-  const { entries, activeDay } = useSelector(
+  const { entries, activeDay, entriesMonthly, activeMonth } = useSelector(
     (state: RootState) => state.general
   );
 
   const dispatch = useDispatch<any>();
-  const { getAllDataDaily } = useSelector((state: RootState) => state.general);
+  const { getAllDataDaily, getAllDataMonthly } = useSelector(
+    (state: RootState) => state.general
+  );
   // console.log('getAllDataDaily', getAllDataDaily);
   const [dailyTimeEstimate, setDailyTimeEstimate] = useState('');
   const [activeTeamMatesDaily, setActiveTeammatesDaily] = useState('');
+  const [monthlyTimeEstimate, setMonthlyTimeEstimate] = useState('');
+  const [activeTeamMatesMonthly, setActiveTeammatesMonthly] = useState('');
   // temp
 
   const [barchartData, setBarchartData] = useState<any>([]);
   const [barchartDataTimelogs, setBarchartDataTimelogs] = useState<any>([]);
   const [barchartDataAverage, setBarchartDataAverage] = useState<any>([]);
   const totalTeammatesSupport = 35;
-
-  useEffect(() => {
-    dispatch(triggerGetAllDataDaily());
-  }, []);
   useEffect(() => {
     const barchartDataAverage = {
       labels: [] as string[],
@@ -54,76 +59,148 @@ function Overview({}: IProps) {
         },
       ],
     };
-    if (getAllDataDaily.status === 'successful') {
-      // new
-      // console.log('entries', entries);
+    if (dropdownSelectedIntervals.value === 'daily') {
+      if (getAllDataDaily.status === 'successful') {
+        // new
+        // console.log('entries', entries);
 
-      const y = entries.map((item: any) => {
-        const labels: any = [];
-        const dataSets: any = [];
-        labels.push(item[0]);
-        //
-        const arrayOfMillisecs: any = [];
-        // console.log('item[1]', item[1]);
+        const y = entries.map((item: any) => {
+          const labels: any = [];
+          const dataSets: any = [];
+          labels.push(item[0]);
+          //
+          const arrayOfMillisecs: any = [];
+          // console.log('item[1]', item[1]);
 
-        const averageTemp = Object.entries(item[1]).forEach((item2: any) => {
-          arrayOfMillisecs.push(
-            item2[1].lastMilliSecs + item2[1].milliSecsFromLastHour
+          Object.entries(item[1]).forEach((item2: any) => {
+            arrayOfMillisecs.push(
+              item2[1].lastMilliSecs + item2[1].milliSecsFromLastHour
+            );
+          });
+          const sum2 = arrayOfMillisecs.reduce(
+            (accumulator: number, currentValue: number) =>
+              accumulator + currentValue,
+            0
           );
+          const average2 = sum2 / arrayOfMillisecs.length;
+          dataSets.push(average2);
+
+          const obj = {
+            labels: labels[0],
+            dataSets: dataSets[0] / (1000 * 60 * 60),
+          };
+          // console.log('obj', obj);
+
+          return obj;
         });
-        const sum2 = arrayOfMillisecs.reduce(
-          (accumulator: number, currentValue: number) =>
-            accumulator + currentValue,
-          0
-        );
-        const average2 = sum2 / arrayOfMillisecs.length;
-        dataSets.push(average2);
+        // console.log('y', y);
+        y.forEach((item: any) => {
+          barchartDataAverage.labels.push(item.labels);
+          barchartDataAverage.datasets[0].data.push(item.dataSets);
+          setBarchartDataAverage(barchartDataAverage);
+        });
+      }
+    } else if (dropdownSelectedIntervals.value === 'monthly') {
+      if (getAllDataMonthly.status === 'successful') {
+        const y = entriesMonthly.map((item: any) => {
+          const labels: any = [];
+          const dataSets: any = [];
+          labels.push(item[0]);
+          //
+          const arrayOfMillisecs: any = [];
+          // console.log('item[1]', item[1]);
 
-        const obj = {
-          labels: labels[0],
-          dataSets: dataSets[0] / (1000 * 60 * 60),
-        };
-        // console.log('obj', obj);
+          Object.entries(item[1]).forEach((item2: any) => {
+            arrayOfMillisecs.push(
+              item2[1].lastMilliSecs + item2[1].milliSecsFromLastHour
+            );
+          });
+          const sum2 = arrayOfMillisecs.reduce(
+            (accumulator: number, currentValue: number) =>
+              accumulator + currentValue,
+            0
+          );
+          const average2 = sum2 / arrayOfMillisecs.length;
+          dataSets.push(average2);
 
-        return obj;
-      });
-      // console.log('y', y);
-      y.forEach((item: any) => {
-        barchartDataAverage.labels.push(item.labels);
-        barchartDataAverage.datasets[0].data.push(item.dataSets);
-        setBarchartDataAverage(barchartDataAverage);
-      });
+          const obj = {
+            labels: labels[0],
+            dataSets: dataSets[0] / (1000 * 60 * 60),
+          };
+          // console.log('obj', obj);
+
+          return obj;
+        });
+        // console.log('y', y);
+        y.forEach((item: any) => {
+          barchartDataAverage.labels.push(item.labels);
+          barchartDataAverage.datasets[0].data.push(item.dataSets);
+          setBarchartDataAverage(barchartDataAverage);
+        });
+      }
     }
-  }, [getAllDataDaily, entries]);
+  }, [getAllDataDaily, entries, entriesMonthly, dropdownSelectedIntervals]);
 
   useEffect(() => {
-    if (activeDay?.length > 0) {
-      const updateStateFunc = () => {
-        const arrayOfMillisecs: any = [];
-        const x = activeDay[1];
-        const entries = Object.entries(x);
-        entries.forEach((item: any) => {
-          arrayOfMillisecs.push(
-            item[1].lastMilliSecs + item[1].milliSecsFromLastHour
+    if (dropdownSelectedIntervals.value === 'daily') {
+      if (activeDay?.length > 0) {
+        const updateStateFunc = () => {
+          const arrayOfMillisecs: any = [];
+          const x = activeDay[1];
+          const entries = Object.entries(x);
+          entries.forEach((item: any) => {
+            arrayOfMillisecs.push(
+              item[1].lastMilliSecs + item[1].milliSecsFromLastHour
+            );
+          });
+          const sum = arrayOfMillisecs.reduce(
+            (accumulator: number, currentValue: number) =>
+              accumulator + currentValue,
+            0
           );
-        });
-        const sum = arrayOfMillisecs.reduce(
-          (accumulator: number, currentValue: number) =>
-            accumulator + currentValue,
-          0
-        );
-        const average = sum / arrayOfMillisecs.length;
-        // Convert milliseconds to moment duration
-        const duration = moment.duration(average);
-        // Get hours and minutes from the duration
-        const hours = Math.floor(duration.asHours());
-        const minutes = duration.minutes();
-        setDailyTimeEstimate(`${hours}hrs ${minutes}mins`);
-        setActiveTeammatesDaily(entries.length.toString());
-      };
-      updateStateFunc();
+          const average = sum / arrayOfMillisecs.length;
+          // Convert milliseconds to moment duration
+          const duration = moment.duration(average);
+          // Get hours and minutes from the duration
+          const hours = Math.floor(duration.asHours());
+          const minutes = duration.minutes();
+          setDailyTimeEstimate(`${hours}hrs ${minutes}mins`);
+          setActiveTeammatesDaily(entries.length.toString());
+        };
+        updateStateFunc();
+      }
+    } else if (dropdownSelectedIntervals.value === 'monthly') {
+      if (activeMonth?.length > 0) {
+        const updateStateFunc = () => {
+          const arrayOfMillisecs: any = [];
+          const x = activeMonth[1];
+          console.log('xxxxxxxxxxxxxxx', x);
+
+          const entries = Object.entries(x);
+          console.log('entriesxxxxxxxxxxxxxxx', entries);
+          entries.forEach((item: any) => {
+            arrayOfMillisecs.push(
+              item[1].lastMilliSecs + item[1].milliSecsFromLastHour
+            );
+          });
+          const sum = arrayOfMillisecs.reduce(
+            (accumulator: number, currentValue: number) =>
+              accumulator + currentValue,
+            0
+          );
+          const average = sum / arrayOfMillisecs.length;
+          // Convert milliseconds to moment duration
+          const duration = moment.duration(average);
+          // Get hours and minutes from the duration
+          const hours = Math.floor(duration.asHours());
+          const minutes = duration.minutes();
+          setMonthlyTimeEstimate(`${hours}hrs ${minutes}mins`);
+          setActiveTeammatesMonthly(entries.length.toString());
+        };
+        updateStateFunc();
+      }
     }
-  }, [activeDay]);
+  }, [activeDay, activeMonth, dropdownSelectedIntervals]);
 
   useEffect(() => {
     const barChartData = {
@@ -131,7 +208,7 @@ function Overview({}: IProps) {
       datasets: [
         {
           data: [] as number[],
-          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          backgroundColor: theme === 'light' ? '#2764FF' : '#E5A889',
           borderColor: '#2764FF',
           fill: false,
           lineTension: 0.4,
@@ -144,7 +221,7 @@ function Overview({}: IProps) {
       datasets: [
         {
           data: [] as number[],
-          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          backgroundColor: theme === 'light' ? '#2764FF' : '#3C828A',
           borderColor: '#2764FF',
           fill: false,
           lineTension: 0.4,
@@ -152,38 +229,62 @@ function Overview({}: IProps) {
         },
       ],
     };
-    if (activeDay?.length > 0) {
-      const usersTemp = Object.entries(activeDay?.[1]);
-      console.log('usersTemp', usersTemp);
-      let labels: any = [];
-      let datasets: any = [];
-      let labelsTimelog: any = [];
-      let datasetsTimelog: any = [];
-      usersTemp.forEach((item: any) => {
-        labels.push(item[0]);
-        labelsTimelog.push(item[0]);
-        datasets.push(
-          (item[1].lastMilliSecs + item[1].milliSecsFromLastHour) /
-            (1000 * 60 * 60)
-        );
-        datasetsTimelog.push(item[1].timeLogs.length);
-      });
-      barChartData.labels = labels;
-      barChartData.datasets[0].data = datasets;
-      // timelogs
-      barchartDataTimelogs.labels = labelsTimelog;
-      barchartDataTimelogs.datasets[0].data = datasetsTimelog;
-      setBarchartData(barChartData);
-      setBarchartDataTimelogs(barchartDataTimelogs);
-
-      console.log('labels', labels);
-      console.log('dataSets', datasets);
+    if (dropdownSelectedIntervals.value === 'daily') {
+      if (activeDay?.length > 0) {
+        const usersTemp = Object.entries(activeDay?.[1]);
+        console.log('usersTemp daily', usersTemp);
+        let labels: any = [];
+        let datasets: any = [];
+        let labelsTimelog: any = [];
+        let datasetsTimelog: any = [];
+        usersTemp.forEach((item: any) => {
+          labels.push(item[0].split('@')[0]);
+          labelsTimelog.push(item[0].split('@')[0]);
+          datasets.push(
+            (item[1].lastMilliSecs + item[1].milliSecsFromLastHour) /
+              (1000 * 60 * 60)
+          );
+          datasetsTimelog.push(item[1].timeLogs.length);
+        });
+        barChartData.labels = labels;
+        barChartData.datasets[0].data = datasets;
+        // timelogs
+        barchartDataTimelogs.labels = labelsTimelog;
+        barchartDataTimelogs.datasets[0].data = datasetsTimelog;
+        setBarchartData(barChartData);
+        setBarchartDataTimelogs(barchartDataTimelogs);
+      }
+    } else if (dropdownSelectedIntervals.value === 'monthly') {
+      if (activeMonth?.length > 0) {
+        const usersTemp = Object.entries(activeMonth?.[1]);
+        console.log('usersTemp monthly', usersTemp);
+        let labels: any = [];
+        let datasets: any = [];
+        let labelsTimelog: any = [];
+        let datasetsTimelog: any = [];
+        usersTemp.forEach((item: any) => {
+          labels.push(item[0].split('@')[0]);
+          labelsTimelog.push(item[0].split('@')[0]);
+          datasets.push(
+            (item[1].lastMilliSecs + item[1].milliSecsFromLastHour) /
+              (1000 * 60 * 60)
+          );
+          datasetsTimelog.push(item[1].timeLogs.length);
+        });
+        barChartData.labels = labels;
+        barChartData.datasets[0].data = datasets;
+        // timelogs
+        barchartDataTimelogs.labels = labelsTimelog;
+        barchartDataTimelogs.datasets[0].data = datasetsTimelog;
+        setBarchartData(barChartData);
+        setBarchartDataTimelogs(barchartDataTimelogs);
+      }
     }
-  }, [activeDay]);
+  }, [activeDay, activeMonth, dropdownSelectedIntervals]);
 
-  console.log('barchartData', barchartData);
-  console.log('barchartDataTimelogs', barchartDataTimelogs);
-  // console.log('getAllDataDaily', getAllDataDaily);
+  // console.log('barchartData', barchartData);
+  // console.log('barchartDataTimelogs', barchartDataTimelogs);
+  console.log('getAllDataDaily', getAllDataDaily);
 
   return (
     <div className='overview-component'>
@@ -208,9 +309,29 @@ function Overview({}: IProps) {
             <p className='info'>Signed in</p>
             <div className='details'>
               <div className='detail'>
-                <div className='value'>{activeTeamMatesDaily}</div>
+                <div className='value'>
+                  {activeTeamMatesDaily || activeTeamMatesMonthly ? (
+                    <>
+                      {dropdownSelectedIntervals.value === 'daily'
+                        ? activeTeamMatesDaily
+                        : activeTeamMatesMonthly}
+                    </>
+                  ) : (
+                    <>
+                      <SingleLineLoader />
+                    </>
+                  )}
+                </div>
                 <div className='text'>
-                  <Pill text='Signed in today' variant='success' icon />
+                  <Pill
+                    text={
+                      dropdownSelectedIntervals.value === 'daily'
+                        ? 'Signed in today'
+                        : 'Signed in this month'
+                    }
+                    variant='success'
+                    icon
+                  />
                 </div>
               </div>
             </div>
@@ -221,7 +342,26 @@ function Overview({}: IProps) {
             <div className='details'>
               <div className='detail'>
                 <div className='value'>
-                  {totalTeammatesSupport - Number(activeTeamMatesDaily)}
+                  {/* new */}
+                  {activeTeamMatesDaily || activeTeamMatesMonthly ? (
+                    <>
+                      {dropdownSelectedIntervals.value === 'daily' && (
+                        <>
+                          {totalTeammatesSupport - Number(activeTeamMatesDaily)}
+                        </>
+                      )}
+                      {dropdownSelectedIntervals.value === 'monthly' && (
+                        <>
+                          {totalTeammatesSupport -
+                            Number(activeTeamMatesMonthly)}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <SingleLineLoader />
+                    </>
+                  )}
                 </div>
                 <div className='text'>
                   <Pill text='Not signed in' variant='danger' icon />
@@ -232,11 +372,31 @@ function Overview({}: IProps) {
         </div>
         <div className='estimate'>
           <div className='stat'>
-            <p className='title'>Daily Time Estimate</p>
-            <p className='info'>Daily Time Estimate</p>
+            <p className='title'>
+              {dropdownSelectedIntervals.value === 'daily'
+                ? 'Daily time estimate'
+                : 'Monthly time estimate'}
+            </p>
+            <p className='info'>
+              {dropdownSelectedIntervals.value === 'daily'
+                ? 'Daily time estimate'
+                : 'Monthly time estimate'}
+            </p>
             <div className='details'>
               <div className='detail'>
-                <div className='value'>{dailyTimeEstimate}</div>
+                <div className='value'>
+                  {dailyTimeEstimate || monthlyTimeEstimate ? (
+                    <>
+                      {dropdownSelectedIntervals.value === 'daily'
+                        ? dailyTimeEstimate
+                        : monthlyTimeEstimate}
+                    </>
+                  ) : (
+                    <>
+                      <SingleLineLoader />
+                    </>
+                  )}
+                </div>
                 <div className='text'>
                   <Pill text='Across all teammates ' variant='info' icon />
                 </div>

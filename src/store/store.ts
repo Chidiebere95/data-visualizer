@@ -1,13 +1,11 @@
 import { configureStore, type Dispatch } from '@reduxjs/toolkit';
 import generalReducer from '../features/general/general_slice';
-import accountsReducer from '../features/accounts/accounts_slice';
 import thunkMiddleware from 'redux-thunk';
 import { setDispatchFunction } from './storeInstance';
 
 const store = configureStore({
   reducer: {
     general: generalReducer,
-    accounts: accountsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

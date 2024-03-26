@@ -26,7 +26,7 @@
     }
     .dashboard-tabs {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
       margin-bottom: 1.6rem;
       .tabs {
@@ -69,8 +69,9 @@
       }
       .other {
         display: flex;
-        align-items: center;
-        column-gap: 1rem;
+        // align-items: center;
+        row-gap: 4rem;
+        flex-direction: column-reverse;
       }
       .search-wrapper {
         width: 36.3rem;

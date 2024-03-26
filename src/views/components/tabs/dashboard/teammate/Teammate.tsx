@@ -79,10 +79,10 @@ function Teammate() {
         </div>
         {activeTab === 'teammates' && (
           <OverviewTeammate
-            activeDay={activeDay}
-            setActiveDay={setActiveDay}
-            entries={entries}
-            setEntries={setEntries}
+            // activeDay={activeDay}
+            // setActiveDay={setActiveDay}
+            // entries={entries}
+            // setEntries={setEntries}
           />
         )}
       </div>
