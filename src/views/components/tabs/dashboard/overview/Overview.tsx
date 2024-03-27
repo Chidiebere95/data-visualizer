@@ -62,16 +62,11 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
     if (dropdownSelectedIntervals.value === 'daily') {
       if (getAllDataDaily.status === 'successful') {
         // new
-        // console.log('entries', entries);
-
         const y = entries.map((item: any) => {
           const labels: any = [];
           const dataSets: any = [];
           labels.push(item[0]);
-          //
           const arrayOfMillisecs: any = [];
-          // console.log('item[1]', item[1]);
-
           Object.entries(item[1]).forEach((item2: any) => {
             arrayOfMillisecs.push(
               item2[1].lastMilliSecs + item2[1].milliSecsFromLastHour
@@ -84,13 +79,10 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
           );
           const average2 = sum2 / arrayOfMillisecs.length;
           dataSets.push(average2);
-
           const obj = {
             labels: labels[0],
             dataSets: dataSets[0] / (1000 * 60 * 60),
           };
-          // console.log('obj', obj);
-
           return obj;
         });
         // console.log('y', y);
@@ -244,7 +236,7 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
             (item[1].lastMilliSecs + item[1].milliSecsFromLastHour) /
               (1000 * 60 * 60)
           );
-          datasetsTimelog.push(item[1].timeLogs.length);
+          datasetsTimelog.push(item[1].supportAction.length);
         });
         barChartData.labels = labels;
         barChartData.datasets[0].data = datasets;
@@ -310,16 +302,22 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
             <div className='details'>
               <div className='detail'>
                 <div className='value'>
-                  {activeTeamMatesDaily || activeTeamMatesMonthly ? (
+                  {getAllDataDaily.status === 'base' ||
+                  getAllDataDaily.status === 'loading' ||
+                  getAllDataMonthly.status === 'base' ||
+                  getAllDataMonthly.status === 'loading' ? (
+                    <>
+                      <SingleLineLoader />
+                    </>
+                  ) : getAllDataDaily.status === 'successful' ||
+                    getAllDataMonthly.status === 'successful' ? (
                     <>
                       {dropdownSelectedIntervals.value === 'daily'
                         ? activeTeamMatesDaily
                         : activeTeamMatesMonthly}
                     </>
                   ) : (
-                    <>
-                      <SingleLineLoader />
-                    </>
+                    <></>
                   )}
                 </div>
                 <div className='text'>
@@ -342,8 +340,15 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
             <div className='details'>
               <div className='detail'>
                 <div className='value'>
-                  {/* new */}
-                  {activeTeamMatesDaily || activeTeamMatesMonthly ? (
+                  {getAllDataDaily.status === 'base' ||
+                  getAllDataDaily.status === 'loading' ||
+                  getAllDataMonthly.status === 'base' ||
+                  getAllDataMonthly.status === 'loading' ? (
+                    <>
+                      <SingleLineLoader />
+                    </>
+                  ) : getAllDataDaily.status === 'successful' ||
+                    getAllDataMonthly.status === 'successful' ? (
                     <>
                       {dropdownSelectedIntervals.value === 'daily' && (
                         <>
@@ -358,9 +363,7 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
                       )}
                     </>
                   ) : (
-                    <>
-                      <SingleLineLoader />
-                    </>
+                    <></>
                   )}
                 </div>
                 <div className='text'>
@@ -385,16 +388,22 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
             <div className='details'>
               <div className='detail'>
                 <div className='value'>
-                  {dailyTimeEstimate || monthlyTimeEstimate ? (
+                  {getAllDataDaily.status === 'base' ||
+                  getAllDataDaily.status === 'loading' ||
+                  getAllDataMonthly.status === 'base' ||
+                  getAllDataMonthly.status === 'loading' ? (
+                    <>
+                      <SingleLineLoader />
+                    </>
+                  ) : getAllDataDaily.status === 'successful' ||
+                    getAllDataMonthly.status === 'successful' ? (
                     <>
                       {dropdownSelectedIntervals.value === 'daily'
                         ? dailyTimeEstimate
                         : monthlyTimeEstimate}
                     </>
                   ) : (
-                    <>
-                      <SingleLineLoader />
-                    </>
+                    <></>
                   )}
                 </div>
                 <div className='text'>

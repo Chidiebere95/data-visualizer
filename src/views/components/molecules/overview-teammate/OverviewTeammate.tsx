@@ -13,26 +13,12 @@ import { AppContext } from '../../../../context/Context';
 import { RootState } from '../../../../store/store';
 import { useLocation, useNavigate } from 'react-router-dom';
 interface IProps {
-  // activeDay: any[];
-  // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
-  // entries: any[];
-  // setEntries: React.Dispatch<React.SetStateAction<any[]>>;
   staff?: any;
   setActiveTab?: React.Dispatch<React.SetStateAction<string>>;
 }
-function OverviewTeammate({
-  // activeDay,
-  // setActiveDay,
-  // entries,
-  // setEntries
-  staff,
-  setActiveTab,
-}: IProps) {
+function OverviewTeammate({ staff, setActiveTab }: IProps) {
   const navigate = useNavigate();
   const { theme } = useContext(AppContext);
-  // const { state } = useLocation();
-  // console.log('state', state);
-  // const { staff } = state;
 
   const dispatch = useDispatch<any>();
   const { getAllDataDaily } = useSelector((state: RootState) => state.general);
@@ -43,34 +29,6 @@ function OverviewTeammate({
 
   const [barchartData, setBarchartData] = useState<any>([]);
   const [barchartDataTimelogs, setBarchartDataTimelogs] = useState<any>([]);
-  const [totalTeammatesSupport, setTotalTeamatesSupport] = useState(20);
-
-  const barChartData2 = {
-    labels: [] as string[],
-    datasets: [
-      {
-        data: [] as number[],
-        backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
-        borderColor: '#2764FF',
-        fill: false,
-        lineTension: 0.4,
-        radius: 0,
-      },
-    ],
-  };
-  const barChartDataTimelogs = {
-    labels: [] as string[],
-    datasets: [
-      {
-        data: [] as number[],
-        backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
-        borderColor: '#2764FF',
-        fill: false,
-        lineTension: 0.4,
-        radius: 0,
-      },
-    ],
-  };
 
   // useEffect(() => {
   //   dispatch(triggerGetAllDataDaily());
@@ -109,9 +67,9 @@ function OverviewTeammate({
   //     });
   //     // console.log('y', y);
   //     y.forEach((item: any) => {
-  //       barChartData2.labels.push(item.labels);
-  //       barChartData2.datasets[0].data.push(item.dataSets);
-  //       setBarchartData(barChartData2);
+  //       barchartData.labels.push(item.labels);
+  //       barchartData.datasets[0].data.push(item.dataSets);
+  //       setBarchartData(barchartData);
   //     });
   //   }
   // }, [getAllDataDaily]);
@@ -149,11 +107,12 @@ function OverviewTeammate({
 
   console.log('staff', staff);
 
-  const minTime = staff[1].timeLogs[0];
+  const minTime = staff[1].supportAction[0].timeLog;
   const dateMinTime = moment(minTime);
   const minTimeData = dateMinTime.format('h:mma');
   // maxTime
-  const maxTime = staff[1].timeLogs[staff[1].timeLogs.length - 1];
+  const maxTime =
+    staff[1].supportAction[staff[1].supportAction.length - 1].timeLog;
   const dateMaxTime = moment(maxTime);
   const maxTimeData = dateMaxTime.format('h:mma');
   // time
@@ -198,27 +157,55 @@ function OverviewTeammate({
 
   useEffect(() => {
     console.log('temp Array##########', tempArray);
+    const barchartData = {
+      labels: [] as string[],
+      datasets: [
+        {
+          data: [] as number[],
+          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          borderColor: '#2764FF',
+          fill: false,
+          lineTension: 0.4,
+          radius: 0,
+        },
+      ],
+    };
+    const barChartDataTimelogs = {
+      labels: [] as string[],
+      datasets: [
+        {
+          data: [] as number[],
+          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          borderColor: '#2764FF',
+          fill: false,
+          lineTension: 0.4,
+          radius: 0,
+        },
+      ],
+    };
 
     tempArray.forEach((item: any) => {
-      console.log('item temp array', item);
+      // console.log('item temp array', item);
       const label = item.maxTime.split('T')[0];
-      const labelTimelogs = item.timeLogs.length;
+      const labelTimelogs = item.maxTime.split('T')[0];
 
-      console.log('item####', item.timeLogs.length);
+      // console.log('item####', item.timeLogs.length);
       const dataSets =
         (item.lastMilliSecs + item.milliSecsFromLastHour) / (1000 * 60 * 60);
+      const dataSetsTimeLogs = item.supportAction.length;
 
-      barChartData2.labels.push(label);
-      barChartData2.datasets[0].data.push(dataSets);
+      barchartData.labels.push(label);
+      barchartData.datasets[0].data.push(dataSets);
       barChartDataTimelogs.labels.push(labelTimelogs);
-      barChartDataTimelogs.datasets[0].data.push(dataSets);
+      barChartDataTimelogs.datasets[0].data.push(dataSetsTimeLogs);
     });
-    console.log('barChartData2', barChartData2);
-    setBarchartData(barChartData2);
+    console.log('barchartData', barchartData);
+    console.log('barChartDataTimelogs', barChartDataTimelogs);
+    setBarchartData(barchartData);
     setBarchartDataTimelogs(barChartDataTimelogs);
   }, [tempArray.length]);
-  console.log('barChartData2', barChartData2);
-  console.log('barChartDataTimelogs', barChartDataTimelogs);
+  // console.log('barchartData', barchartData);
+  // console.log('barChartDataTimelogs', barChartDataTimelogs);
 
   return (
     <div className='overview-teammate-component'>

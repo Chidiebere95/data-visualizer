@@ -68,7 +68,7 @@ function Dashboard() {
         dispatch(setActiveMonth(last));
       }
     }
-  }, [getAllDataMonthly, dropdownSelectedIntervals]);
+  }, [getAllDataDaily, getAllDataMonthly, dropdownSelectedIntervals]);
 
   useEffect(() => {
     if (dropdownSelectedIntervals.value === 'daily') {

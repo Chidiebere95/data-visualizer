@@ -68,16 +68,20 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
                     <th>Email</th>
                     <th>First sign in</th>
                     <th>Last sign in</th>
-                    <th>Today's session</th>
+                    <th>
+                      {dropdownSelectedIntervals.value === 'daily'
+                        ? "Today's session"
+                        : "This month's session"}
+                    </th>
                     <th>Activities</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tableData.map((staff: any, index: number) => {
-                    console.log('staff', staff);
+                    // console.log('staff', staff);
 
                     // mintime
-                    const minTime = staff[1].timeLogs[0];
+                    const minTime = staff[1].supportAction[0].timeLog;
                     const dateMinTime = moment(minTime);
                     const minTimeData = dateMinTime.format(
                       dropdownSelectedIntervals.value === 'daily'
@@ -88,8 +92,11 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
                     // new
 
                     // maxTime
+                    // const maxTime =
+                    //   staff[1].timeLogs[staff[1].timeLogs.length - 1];
                     const maxTime =
-                      staff[1].timeLogs[staff[1].timeLogs.length - 1];
+                      staff[1].supportAction[staff[1].supportAction.length - 1]
+                        .timeLog;
                     const dateMaxTime = moment(maxTime);
                     const maxTimeData = dateMaxTime.format(
                       dropdownSelectedIntervals.value === 'daily'
@@ -170,7 +177,7 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
                           </div>
                         </td>
                         <td>{formattedDuration2}</td>
-                        <td>{staff[1].timeLogs.length}</td>
+                        <td>{staff[1].supportAction.length}</td>
                       </tr>
                     );
                   })}
