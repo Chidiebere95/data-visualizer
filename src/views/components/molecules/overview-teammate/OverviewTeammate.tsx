@@ -19,7 +19,9 @@ interface IProps {
 function OverviewTeammate({ staff, setActiveTab }: IProps) {
   const navigate = useNavigate();
   const { theme } = useContext(AppContext);
-
+  const { entries, activeDay, entriesMonthly } = useSelector(
+    (state: RootState) => state.general
+  );
   const dispatch = useDispatch<any>();
   const { getAllDataDaily } = useSelector((state: RootState) => state.general);
   // console.log('getAllDataDaily', getAllDataDaily);
@@ -107,56 +109,86 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
 
   console.log('staff', staff);
 
-  const minTime = staff[1].supportAction[0].timeLog;
-  const dateMinTime = moment(minTime);
-  const minTimeData = dateMinTime.format('h:mma');
-  // maxTime
-  const maxTime =
-    staff[1].supportAction[staff[1].supportAction.length - 1].timeLog;
-  const dateMaxTime = moment(maxTime);
-  const maxTimeData = dateMaxTime.format('h:mma');
-  // time
-  const time = staff[1].minTime;
-  const time2 = moment(time);
-  const time3 = time2.format('MMMM Do, YYYY');
-  // todays session
-  const startDateTime = moment(
-    staff[1].lastMilliSecs + staff[1].milliSecsFromLastHour
-  );
-  // const endDateTime = moment(staff[1].maxTime);
+  const tempArray: any = [];
+  const [activityLogTableData, setActivityLogTableData] = useState<any>([]);
+  useEffect(() => {
+    if (tempArray.length > 0) {
+      console.log('staff', staff);
+      const activityLogTableDataTemp = tempArray.map((item: any) => {
+        console.log('item##########', item);
 
-  // Calculate the difference in milliseconds
-  const durationMs = Number(startDateTime);
+        const minTime = item.supportAction[0].timeLog;
+        const dateMinTime = moment(minTime);
+        const minTimeData = dateMinTime.format('h:mma');
+        // maxTime
+        const maxTime =
+          item.supportAction[staff[1].supportAction.length - 1].timeLog;
+        const dateMaxTime = moment(maxTime);
+        const maxTimeData = dateMaxTime.format('h:mma');
+        // time
+        const time = item.minTime;
+        const time2 = moment(time);
+        const time3 = time2.format('MMMM Do, YYYY');
+        // todays session
+        const startDateTime = moment(
+          item.lastMilliSecs + item.milliSecsFromLastHour
+        );
+        // const endDateTime = moment(staff[1].maxTime);
 
-  // Convert milliseconds to hours, minutes, and seconds
-  const hours = Math.floor(durationMs / (1000 * 60 * 60));
-  const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((durationMs % (1000 * 60)) / 1000);
+        // Calculate the difference in milliseconds
+        const durationMs = Number(startDateTime);
 
-  // Format the result
-  const formattedDuration = `${hours}hrs, ${minutes}mins, ${seconds}s`;
+        // Convert milliseconds to hours, minutes, and seconds
+        const hours = Math.floor(durationMs / (1000 * 60 * 60));
+        const minutes = Math.floor(
+          (durationMs % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((durationMs % (1000 * 60)) / 1000);
 
+        // Format the result
+        const formattedDuration = `${hours}hrs, ${minutes}mins, ${seconds}s`;
+        return { minTimeData, maxTimeData, time3, formattedDuration };
+      });
+      setActivityLogTableData(activityLogTableDataTemp);
+    }
+  }, [tempArray.length]);
+  const [activitiesTableData, setActivitiesTableData] = useState<any>();
+  useEffect(() => {
+    if (tempArray.length > 0) {
+      const activitiesTableDataTemp = tempArray.map((item: any) => {
+        return {
+          date: item.maxTime.split('T')[0],
+          supportAction: item.supportAction,
+        };
+      });
+      console.log('activitiesTableDataTemp', activitiesTableDataTemp);
+      const activeDayData = activitiesTableDataTemp.find(
+        (item: any) => item.date === activeDay[0]
+      );
+      setActivitiesTableData(activeDayData);
+      console.log('activeDayData', activeDayData);
+    }
+  }, [tempArray.length, activeDay]);
   // added
 
   //
   const entriesDailyData = Object.entries(getAllDataDaily.data);
-  // console.log('entriesDailyData', entriesDailyData);
-  const tempArray: any = [];
+  console.log('entriesDailyData', entriesDailyData);
   entriesDailyData.forEach((item: any) => {
     const usersData = Object.entries(item[1]);
 
     // console.log('usersdata', usersData);
     console.log('usersdata[0]', usersData[0]);
     usersData.forEach((userData: any) => {
-      if (userData[0] === staff[0]) {
+      if (userData[0] === staff?.[0]) {
         // console.log('usersdata[0][1]', usersData[0][1]);
         tempArray.push(userData[1]);
       }
     });
   });
+  // console.log('temp Array##########', tempArray);
 
   useEffect(() => {
-    console.log('temp Array##########', tempArray);
     const barchartData = {
       labels: [] as string[],
       datasets: [
@@ -205,7 +237,7 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
     setBarchartDataTimelogs(barChartDataTimelogs);
   }, [tempArray.length]);
   // console.log('barchartData', barchartData);
-  // console.log('barChartDataTimelogs', barChartDataTimelogs);
+  console.log('activitiesTableData', activitiesTableData);
 
   return (
     <div className='overview-teammate-component'>
@@ -224,7 +256,7 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
           <div className='details'>
             <div className='email'>
               <p className='title'>Email address:</p>
-              <p className='value'>{staff[0]}</p>
+              <p className='value'>{staff?.[0]}</p>
             </div>
             {/* <div className='all-time-est'>
               <p className='title'>All time estimate</p>
@@ -417,15 +449,55 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
                 </tr>
               </thead>
               <tbody>
+                {activityLogTableData.map((item: any, index: number) => (
+                  <tr className='index' key={index}>
+                    <td className='td-1'>
+                      <span>{staff?.[0]}</span>
+                    </td>
+                    <td>{item.minTimeData}</td>
+                    <td>{item.maxTimeData}</td>
+                    <td>{item.time3}</td>
+                    <td>{item.formattedDuration}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div className='activity-log'>
+        <section className='header'>
+          <p className='title'>Activities</p>
+        </section>
+        <div className='table-wrapper'>
+          <div className='table'>
+            <table border={1}>
+              {/* <caption>Table Caption</caption> */}
+              <thead>
                 <tr>
-                  <td className='td-1'>
-                    <span>{staff[0]}</span>
-                  </td>
-                  <td>{minTimeData}</td>
-                  <td>{maxTimeData}</td>
-                  <td>{time3}</td>
-                  <td>{formattedDuration}</td>
+                  <th>Visited</th>
+                  <th>Activity</th>
+                  <th>Time</th>
                 </tr>
+              </thead>
+              <tbody>
+                {activitiesTableData && (
+                  <>
+                    {activitiesTableData.supportAction.map(
+                      (item: any, index: number) => {
+                        const date = moment(item.timeLog);
+                        const formattedTime = date.format('hh:mm a');
+                        return (
+                          <tr className='index' key={index}>
+                            <td className='td-1'>{item.visited}</td>
+                            <td>{item.activity}</td>
+                            <td>{formattedTime}</td>
+                          </tr>
+                        );
+                      }
+                    )}
+                  </>
+                )}
               </tbody>
             </table>
           </div>

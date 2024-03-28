@@ -160,7 +160,7 @@
     // display: flex;
     // column-gap: 1.6rem;
     // justify-content: space-between;
-    .incoming {
+    .chart-con {
       min-width: 79.6rem;
       width: 100%;
       flex: 1 1 0%;
@@ -171,16 +171,36 @@
       padding: 2.4rem;
       border-radius: 1rem;
       margin-bottom: 3rem;
-      .title {
-        font-family: $thic700;
-        color: var(--Colors-Base-base-black, #1c2127);
-        font-feature-settings: 'clig' off, 'liga' off;
-        // font-family: Nexa;
-        font-size: 1.4rem;
-        font-style: normal;
-        font-weight: 900;
-        line-height: 2.4rem;
-        margin-bottom: 2rem;
+      .title-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .title {
+          font-family: $thic700;
+          color: var(--Colors-Base-base-black, #1c2127);
+          font-feature-settings: 'clig' off, 'liga' off;
+          // font-family: Nexa;
+          font-size: 1.4rem;
+          font-style: normal;
+          font-weight: 900;
+          line-height: 2.4rem;
+          margin-bottom: 2rem;
+        }
+        .filters-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          column-gap: 2rem;
+          .filter {
+            padding: 1rem;
+            border-radius: 1rem;
+            background-color: #3c828a;
+            color: #fff;
+            &.active {
+              background-color: #e5a889;
+            }
+          }
+        }
       }
       .charts-wrapper {
         .legend-wrapper {

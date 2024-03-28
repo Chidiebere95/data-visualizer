@@ -43,6 +43,8 @@ function Dashboard() {
   // date
   const [showDropdownDate, setShowDropdownDate] = useState(false);
   const [dropdownOptionsDate, setDropdownOptionsDate] = useState<any>([]);
+  const [dropdownOptionsDateDaily, setDropdownOptionsDateDaily] = useState<any>([]);
+  const [dropdownOptionsDateMonthly, setDropdownOptionsDateMonthly] = useState<any>([]);
   const [dropdownSelectedDate, setDropdownSelectedDate] = useState<any>({});
 
   // new
@@ -50,9 +52,7 @@ function Dashboard() {
     if (dropdownSelectedIntervals.value === 'daily') {
       if (getAllDataDaily.status === 'successful') {
         const data = getAllDataDaily.data;
-        // console.log(data);
         const entries = Object.entries(data);
-        // console.log('entries##########', entries);
         const last = entries[entries.length - 1];
         dispatch(setEntries(entries));
         dispatch(setActiveDay(last));
@@ -60,9 +60,7 @@ function Dashboard() {
     } else if (dropdownSelectedIntervals.value === 'monthly') {
       if (getAllDataMonthly.status === 'successful') {
         const data = getAllDataMonthly.data;
-        // console.log(data);
         const entries = Object.entries(data);
-        console.log('entries##########', entries);
         const last = entries[entries.length - 1];
         dispatch(setEntriesMonthly(entries));
         dispatch(setActiveMonth(last));

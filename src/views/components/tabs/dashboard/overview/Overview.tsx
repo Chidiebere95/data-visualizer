@@ -13,6 +13,8 @@ import moment from 'moment';
 import { AppContext } from '../../../../../context/Context';
 import { RootState } from '../../../../../store/store';
 import SingleLineLoader from '../../../loaders/single-line-loader/SingleLineLoader';
+import Dropdown from '../../../molecules/dropdown/Dropdown';
+import Filter from '../../../molecules/filter/Filter';
 interface IProps {
   // activeDay: any[];
   // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
@@ -276,7 +278,38 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
 
   // console.log('barchartData', barchartData);
   // console.log('barchartDataTimelogs', barchartDataTimelogs);
-  console.log('getAllDataDaily', getAllDataDaily);
+  // console.log('getAllDataDaily', getAllDataDaily);
+  // new Productivity log
+  // intervals
+  const [
+    showDropdownIntervalsProductivityLog,
+    setShowDropdownIntervalsProductivityLog,
+  ] = useState(false);
+  const [
+    dropdownOptionsIntervalsProductivityLog,
+    setDropdownOptionsIntervalsProductivityLog,
+  ] = useState([
+    { title: 'Daily', value: 'daily' },
+    { title: 'Monthly', value: 'monthly' },
+  ]);
+  const [
+    dropdownSelectedIntervalsProductivityLog,
+    setDropdownSelectedIntervalsProductivityLog,
+  ] = useState({
+    title: 'Daily',
+    value: 'daily',
+  });
+  // date
+  const [showDropdownDateProductivityLog, setShowDropdownDateProductivityLog] =
+    useState(false);
+  const [
+    dropdownOptionsDateProductivityLog,
+    setDropdownOptionsDateProductivityLog,
+  ] = useState<any>([]);
+  const [
+    dropdownSelectedDateProductivityLog,
+    setDropdownSelectedDateProductivityLog,
+  ] = useState<any>({});
 
   return (
     <div className='overview-component'>
@@ -415,8 +448,40 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
         </div>
       </div>
       <div className='charts'>
-        <div className='incoming'>
-          <p className='title'>Productivity Chart</p>
+        <div className='chart-con'>
+          <div className='title-wrapper'>
+            <p className='title'>Productivity Chart</p>
+            <div className='filters-wrapper'>
+              <Dropdown
+                showDropdown={showDropdownIntervalsProductivityLog}
+                setShowDropdown={setShowDropdownIntervalsProductivityLog}
+                dropdownSelected={dropdownSelectedIntervalsProductivityLog}
+                setDropdownSelected={
+                  setDropdownSelectedIntervalsProductivityLog
+                }
+                dropdownOptions={dropdownOptionsIntervalsProductivityLog}
+              >
+                <Filter
+                  setShowDropdown={setShowDropdownIntervalsProductivityLog}
+                  dropdownSelected={dropdownSelectedIntervalsProductivityLog}
+                />
+              </Dropdown>
+              {dropdownOptionsDateProductivityLog.length > 0 && (
+                <Dropdown
+                  showDropdown={showDropdownDateProductivityLog}
+                  setShowDropdown={setShowDropdownDateProductivityLog}
+                  dropdownSelected={dropdownSelectedDateProductivityLog}
+                  setDropdownSelected={setDropdownSelectedDateProductivityLog}
+                  dropdownOptions={dropdownOptionsDateProductivityLog}
+                >
+                  <Filter
+                    setShowDropdown={setShowDropdownDateProductivityLog}
+                    dropdownSelected={dropdownSelectedDateProductivityLog}
+                  />
+                </Dropdown>
+              )}
+            </div>
+          </div>
           <div className='charts-wrapper'>
             <div className='chart'>
               {getAllDataDaily.status === 'base' ||
@@ -500,7 +565,7 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
             </div>
           </div>
         </div>
-        <div className='incoming timelogs'>
+        <div className='chart-con timelogs'>
           <p className='title'>Timelogs Chart</p>
           <div className='charts-wrapper'>
             {/* <div className='legend-wrapper'>
@@ -595,7 +660,7 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
             </div>
           </div>
         </div>
-        <div className='incoming timelogs'>
+        <div className='chart-con timelogs'>
           <p className='title'>Average Chart</p>
           <div className='charts-wrapper'>
             {/* <div className='legend-wrapper'>
