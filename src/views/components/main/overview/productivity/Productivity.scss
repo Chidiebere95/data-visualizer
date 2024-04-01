@@ -1,0 +1,81 @@
+@import '../../../../../assets/scss/colors.scss';
+@import '../../../../../assets/scss/index.scss';
+
+.chart-con-productivity {
+  min-width: 79.6rem;
+  width: 100%;
+  flex: 1 1 0%;
+  margin: 0 auto;
+  border: 1px solid #eaf1fa;
+  background-color: #fff;
+  box-shadow: 0px 5.969581604003906px 16.714828491210938px 0px #080f340a;
+  padding: 2.4rem;
+  border-radius: 1rem;
+  margin-bottom: 3rem;
+  .title {
+    font-family: $thic700;
+    color: var(--Colors-Base-base-black, #1c2127);
+    font-feature-settings: 'clig' off, 'liga' off;
+    // font-family: Nexa;
+    font-size: 1.4rem;
+    font-style: normal;
+    font-weight: 900;
+    line-height: 2.4rem;
+  }
+  .title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .filters-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      column-gap: 2rem;
+    }
+  }
+  .charts-wrapper {
+    .legend-wrapper {
+      display: flex;
+      align-items: center;
+      column-gap: 3.2rem;
+      margin-bottom: 3rem;
+      .legend {
+        display: flex;
+        align-items: center;
+        column-gap: 1rem;
+
+        .color {
+          width: 1.6rem;
+          height: 1.6rem;
+          min-width: 1.6rem;
+          min-height: 1.6rem;
+          border-radius: 0.2rem;
+
+          &.online {
+            background-color: #3c828a;
+          }
+          &.away {
+            background-color: #e5a889;
+          }
+        }
+      }
+    }
+    .chart {
+      min-width: 100%;
+      min-height: 50rem;
+      width: 100%;
+      height: 100%;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+/* CSS to hide the options panel */
+.DateRangePickerInput__calendar {
+  display: none;
+}
+.rdrDefinedRangesWrapper {
+  display: none;
+}

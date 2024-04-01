@@ -183,23 +183,32 @@
     // padding: 2.4rem;
     border-radius: 1rem;
     margin-bottom: 4rem;
-    .header {
+    .filters-con {
+      padding: 2.4rem;
       display: flex;
       align-items: center;
       column-gap: 1rem;
-      padding: 2.4rem;
-      p {
-        font-family: $thic700;
-        color: #000;
-        font-feature-settings: 'clig' off, 'liga' off;
-        // font-family: Nexa;
-        font-size: 1.4rem;
-        font-style: normal;
-        font-weight: 900;
-        line-height: 2.4rem;
-        &.details {
+      justify-content: space-between;
+      .header {
+        p {
+          font-family: $thic700;
           color: #000;
+          font-feature-settings: 'clig' off, 'liga' off;
+          // font-family: Nexa;
+          font-size: 1.4rem;
+          font-style: normal;
+          font-weight: 900;
+          line-height: 2.4rem;
+          &.details {
+            color: #000;
+          }
         }
+      }
+      .filters-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        column-gap: 2rem;
       }
     }
     .table-wrapper {
@@ -274,6 +283,17 @@
               }
             }
           }
+        }
+      }
+    }
+  }
+  .activities {
+    .table-wrapper {
+      max-height: 50rem;
+      overflow-y: scroll;
+      table {
+        th {
+          // position: sticky;
         }
       }
     }

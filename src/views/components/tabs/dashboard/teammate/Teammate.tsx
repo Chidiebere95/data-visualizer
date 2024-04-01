@@ -77,14 +77,14 @@ function Teammate() {
             </button>
           ))}
         </div>
-        {activeTab === 'teammates' && (
+        {/* {activeTab === 'teammates' && (
           <OverviewTeammate
             // activeDay={activeDay}
             // setActiveDay={setActiveDay}
             // entries={entries}
             // setEntries={setEntries}
           />
-        )}
+        )} */}
       </div>
     </div>
   );

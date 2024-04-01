@@ -12,39 +12,102 @@ import Teammate from '../teammate/Teammate';
 import Search from '../../../molecules/search/Search';
 import OverviewTeammate from '../../../molecules/overview-teammate/OverviewTeammate';
 import { getTimeAgo } from '../../../../../utils/helpers';
+import Dropdown from '../../../molecules/dropdown/Dropdown';
+import Filter from '../../../molecules/filter/Filter';
 interface IProps {
-  // activeDay: any[];
-  // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
-  dropdownSelectedIntervals: {
-    title: string;
-    value: string;
-  };
+  dropdownOptionsDateDaily: any;
+  setDropdownOptionsDateDaily: React.Dispatch<any>;
+  dropdownOptionsDateMonthly: any;
+  setDropdownOptionsDateMonthly: React.Dispatch<any>;
 }
-function Teammates({ dropdownSelectedIntervals }: IProps) {
+function Teammates({
+  dropdownOptionsDateDaily,
+  setDropdownOptionsDateDaily,
+  dropdownOptionsDateMonthly,
+  setDropdownOptionsDateMonthly,
+}: IProps) {
   const navigate = useNavigate();
-  const { entries, activeDay, activeMonth } = useSelector(
+  const { entries, entriesMonthly, activeDay, activeMonth } = useSelector(
     (state: RootState) => state.general
   );
   const params = useParams();
   // console.log('params', params);
   const { getAllDataDaily } = useSelector((state: RootState) => state.general);
   const [tableData, setTableData] = useState<Array<any>>([]);
+  // new
+  const [showDropdownIntervalsTeammates, setShowDropdownIntervalsTeammates] =
+    useState(false);
+  const [
+    dropdownOptionsIntervalsTeammates,
+    setDropdownOptionsIntervalsTeammates,
+  ] = useState([
+    { title: 'Daily', value: 'daily' },
+    { title: 'Monthly', value: 'monthly' },
+  ]);
+  const [
+    dropdownSelectedIntervalsTeammates,
+    setDropdownSelectedIntervalsTeammates,
+  ] = useState({
+    title: 'Daily',
+    value: 'daily',
+  });
+  // date
+  const [showDropdownDateTeammates, setShowDropdownDateTeammates] =
+    useState(false);
+  const [dropdownOptionsDateTeammates, setDropdownOptionsDateTeammates] =
+    useState<any>([]);
+  const [dropdownSelectedDateTeammates, setDropdownSelectedDateTeammates] =
+    useState<any>({});
+  const [activeDayTeammates, setActiveDayTeammates] = useState<any>([]);
+  const [activeMonthTeammates, setActiveMonthTeammates] = useState<any>([]);
+
   useEffect(() => {
-    if (dropdownSelectedIntervals.value === 'daily') {
-      if (activeDay?.length! > 0) {
-        const data = activeDay[1];
+    if (dropdownSelectedIntervalsTeammates.value === 'daily') {
+      setDropdownSelectedDateTeammates(
+        dropdownOptionsDateDaily[dropdownOptionsDateDaily.length - 1]
+      );
+      setDropdownOptionsDateTeammates(dropdownOptionsDateDaily);
+    } else {
+      setDropdownSelectedDateTeammates(
+        dropdownOptionsDateMonthly[dropdownOptionsDateMonthly.length - 1]
+      );
+      setDropdownOptionsDateTeammates(dropdownOptionsDateMonthly);
+    }
+  }, [dropdownSelectedIntervalsTeammates]);
+  useEffect(() => {
+    if (dropdownSelectedIntervalsTeammates.value === 'daily') {
+      if (entries.length > 0) {
+        const activeDayTemp = entries.find(
+          (item: any) => item[0] === dropdownSelectedDateTeammates.value
+        );
+        setActiveDayTeammates(activeDayTemp);
+      }
+    } else if (dropdownSelectedIntervalsTeammates.value === 'monthly') {
+      if (entriesMonthly.length > 0) {
+        const activeMonthTemp = entriesMonthly.find(
+          (item: any) => item[0] === dropdownSelectedDateTeammates.value
+        );
+        setActiveMonthTeammates(activeMonthTemp);
+      }
+    }
+  }, [dropdownSelectedDateTeammates, dropdownSelectedIntervalsTeammates]);
+  // end of new
+  useEffect(() => {
+    if (dropdownSelectedIntervalsTeammates.value === 'daily') {
+      if (activeDayTeammates?.length! > 0) {
+        const data = activeDayTeammates[1];
         const entries = Object.entries(data);
         setTableData(entries);
       }
-    } else if (dropdownSelectedIntervals.value === 'monthly') {
-      if (activeMonth?.length! > 0) {
-        const data = activeMonth[1];
+    } else if (dropdownSelectedIntervalsTeammates.value === 'monthly') {
+      if (activeMonthTeammates?.length! > 0) {
+        const data = activeMonthTeammates[1];
         const entries = Object.entries(data);
         setTableData(entries);
       }
     }
-  }, [activeDay, activeMonth, dropdownSelectedIntervals]);
-  // console.log('activeday', activeDay);
+  }, [activeDayTeammates, activeMonthTeammates]);
+
   const [activeTab, setActiveTab] = useState('main');
   const [staff, setStaff] = useState<any>([]);
 
@@ -56,8 +119,38 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
             <div className='title-wrapper'>
               <p className='title'>Teamates</p>
             </div>
-            <div className='search-wrapper'>
-              <Search />
+            <div className='filters-con'>
+              <div className='filters-wrapper'>
+                <Dropdown
+                  showDropdown={showDropdownIntervalsTeammates}
+                  setShowDropdown={setShowDropdownIntervalsTeammates}
+                  dropdownSelected={dropdownSelectedIntervalsTeammates}
+                  setDropdownSelected={setDropdownSelectedIntervalsTeammates}
+                  dropdownOptions={dropdownOptionsIntervalsTeammates}
+                >
+                  <Filter
+                    setShowDropdown={setShowDropdownIntervalsTeammates}
+                    dropdownSelected={dropdownSelectedIntervalsTeammates}
+                  />
+                </Dropdown>
+                {dropdownOptionsDateTeammates.length > 0 && (
+                  <Dropdown
+                    showDropdown={showDropdownDateTeammates}
+                    setShowDropdown={setShowDropdownDateTeammates}
+                    dropdownSelected={dropdownSelectedDateTeammates}
+                    setDropdownSelected={setDropdownSelectedDateTeammates}
+                    dropdownOptions={dropdownOptionsDateTeammates}
+                  >
+                    <Filter
+                      setShowDropdown={setShowDropdownDateTeammates}
+                      dropdownSelected={dropdownSelectedDateTeammates}
+                    />
+                  </Dropdown>
+                )}
+              </div>
+              {/* <div className='search-wrapper'>
+                <Search />
+              </div> */}
             </div>
           </div>
           <div className='table-wrapper'>
@@ -69,7 +162,7 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
                     <th>First sign in</th>
                     <th>Last sign in</th>
                     <th>
-                      {dropdownSelectedIntervals.value === 'daily'
+                      {dropdownSelectedIntervalsTeammates.value === 'daily'
                         ? "Today's session"
                         : "This month's session"}
                     </th>
@@ -84,7 +177,7 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
                     const minTime = staff[1].supportAction[0].timeLog;
                     const dateMinTime = moment(minTime);
                     const minTimeData = dateMinTime.format(
-                      dropdownSelectedIntervals.value === 'daily'
+                      dropdownSelectedIntervalsTeammates.value === 'daily'
                         ? 'h:mma'
                         : 'dddd, Do MMM, h:mma'
                     );
@@ -99,7 +192,7 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
                         .timeLog;
                     const dateMaxTime = moment(maxTime);
                     const maxTimeData = dateMaxTime.format(
-                      dropdownSelectedIntervals.value === 'daily'
+                      dropdownSelectedIntervalsTeammates.value === 'daily'
                         ? 'h:mma'
                         : 'dddd, Do MMM, h:mma'
                     );
@@ -163,7 +256,8 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
                         <td className='td-2'>
                           <div className='td-content'>
                             <p className='time'>{minTimeData}</p>
-                            {dropdownSelectedIntervals.value === 'monthly' && (
+                            {dropdownSelectedIntervalsTeammates.value ===
+                              'monthly' && (
                               <p className='time'>{minTimeDataDiff}</p>
                             )}
                           </div>
@@ -171,7 +265,8 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
                         <td className='td-3'>
                           <div className='td-content'>
                             <p className='time'>{maxTimeData}</p>
-                            {dropdownSelectedIntervals.value === 'monthly' && (
+                            {dropdownSelectedIntervalsTeammates.value ===
+                              'monthly' && (
                               <p className='time'>{maxTimeDataDiff}</p>
                             )}
                           </div>
@@ -191,10 +286,10 @@ function Teammates({ dropdownSelectedIntervals }: IProps) {
         <OverviewTeammate
           staff={staff}
           setActiveTab={setActiveTab}
-          // activeDay={activeDay}
-          // setActiveDay={setActiveDay}
-          // entries={entries}
-          // setEntries={setEntries}
+          dropdownOptionsDateDaily={dropdownOptionsDateDaily}
+          setDropdownOptionsDateDaily={setDropdownOptionsDateDaily}
+          dropdownOptionsDateMonthly={dropdownOptionsDateMonthly}
+          setDropdownOptionsDateMonthly={setDropdownOptionsDateMonthly}
         />
       )}
     </>

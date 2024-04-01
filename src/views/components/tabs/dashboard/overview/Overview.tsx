@@ -15,17 +15,34 @@ import { RootState } from '../../../../../store/store';
 import SingleLineLoader from '../../../loaders/single-line-loader/SingleLineLoader';
 import Dropdown from '../../../molecules/dropdown/Dropdown';
 import Filter from '../../../molecules/filter/Filter';
+
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateRangePicker } from 'react-date-range';
+import Productivity from '../../../main/overview/productivity/Productivity';
+import Timelogs from '../../../main/overview/timelogs/Timelogs';
+import Average from '../../../main/overview/average/Average';
+
 interface IProps {
   // activeDay: any[];
   // setActiveDay: React.Dispatch<React.SetStateAction<any[]>>;
   // entries: any[];
   // setEntries: React.Dispatch<React.SetStateAction<any[]>>;
-  dropdownSelectedIntervals: {
-    title: string;
-    value: string;
-  };
+  // dropdownSelectedIntervals: {
+  //   title: string;
+  //   value: string;
+  // };
+  dropdownOptionsDateDaily: any;
+  setDropdownOptionsDateDaily: React.Dispatch<any>;
+  dropdownOptionsDateMonthly: any;
+  setDropdownOptionsDateMonthly: React.Dispatch<any>;
 }
-function Overview({ dropdownSelectedIntervals }: IProps) {
+function Overview({
+  dropdownOptionsDateDaily,
+  setDropdownOptionsDateDaily,
+  dropdownOptionsDateMonthly,
+  setDropdownOptionsDateMonthly,
+}: IProps) {
   // console.log('activeday', activeDay);
   const { theme } = useContext(AppContext);
   const { entries, activeDay, entriesMonthly, activeMonth } = useSelector(
@@ -43,104 +60,76 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
   const [activeTeamMatesMonthly, setActiveTeammatesMonthly] = useState('');
   // temp
 
-  const [barchartData, setBarchartData] = useState<any>([]);
-  const [barchartDataTimelogs, setBarchartDataTimelogs] = useState<any>([]);
-  const [barchartDataAverage, setBarchartDataAverage] = useState<any>([]);
   const totalTeammatesSupport = 35;
+  // new
+  // infoBoard
+  const [showDropdownIntervalsInfoBoard, setShowDropdownIntervalsInfoBoard] =
+    useState(false);
+  const [
+    dropdownOptionsIntervalsInfoBoard,
+    setDropdownOptionsIntervalsInfoBoard,
+  ] = useState([
+    { title: 'Daily', value: 'daily' },
+    { title: 'Monthly', value: 'monthly' },
+  ]);
+  const [
+    dropdownSelectedIntervalsInfoBoard,
+    setDropdownSelectedIntervalsInfoBoard,
+  ] = useState({
+    title: 'Daily',
+    value: 'daily',
+  });
+  // date
+  const [showDropdownDateInfoBoard, setShowDropdownDateInfoBoard] =
+    useState(false);
+  const [dropdownOptionsDateInfoBoard, setDropdownOptionsDateInfoBoard] =
+    useState<any>([]);
+  const [dropdownSelectedDateInfoBoard, setDropdownSelectedDateInfoBoard] =
+    useState<any>({});
+  const [activeDayInfoBoard, setActiveDayInfoBoard] = useState<any>([]);
+  const [activeMonthInfoBoard, setActiveMonthInfoBoard] = useState<any>([]);
   useEffect(() => {
-    const barchartDataAverage = {
-      labels: [] as string[],
-      datasets: [
-        {
-          data: [] as number[],
-          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
-          borderColor: '#2764FF',
-          fill: false,
-          lineTension: 0.4,
-          radius: 0,
-        },
-      ],
-    };
-    if (dropdownSelectedIntervals.value === 'daily') {
-      if (getAllDataDaily.status === 'successful') {
-        // new
-        const y = entries.map((item: any) => {
-          const labels: any = [];
-          const dataSets: any = [];
-          labels.push(item[0]);
-          const arrayOfMillisecs: any = [];
-          Object.entries(item[1]).forEach((item2: any) => {
-            arrayOfMillisecs.push(
-              item2[1].lastMilliSecs + item2[1].milliSecsFromLastHour
-            );
-          });
-          const sum2 = arrayOfMillisecs.reduce(
-            (accumulator: number, currentValue: number) =>
-              accumulator + currentValue,
-            0
-          );
-          const average2 = sum2 / arrayOfMillisecs.length;
-          dataSets.push(average2);
-          const obj = {
-            labels: labels[0],
-            dataSets: dataSets[0] / (1000 * 60 * 60),
-          };
-          return obj;
-        });
-        // console.log('y', y);
-        y.forEach((item: any) => {
-          barchartDataAverage.labels.push(item.labels);
-          barchartDataAverage.datasets[0].data.push(item.dataSets);
-          setBarchartDataAverage(barchartDataAverage);
-        });
+    if (dropdownSelectedIntervalsInfoBoard.value === 'daily') {
+      setDropdownSelectedDateInfoBoard(
+        dropdownOptionsDateDaily[dropdownOptionsDateDaily.length - 1]
+      );
+      setDropdownOptionsDateInfoBoard(dropdownOptionsDateDaily);
+    } else {
+      setDropdownSelectedDateInfoBoard(
+        dropdownOptionsDateMonthly[dropdownOptionsDateMonthly.length - 1]
+      );
+      setDropdownOptionsDateInfoBoard(dropdownOptionsDateMonthly);
+    }
+  }, [
+    dropdownOptionsDateDaily,
+    dropdownOptionsDateMonthly,
+    dropdownSelectedIntervalsInfoBoard,
+  ]);
+  useEffect(() => {
+    if (dropdownSelectedIntervalsInfoBoard.value === 'daily') {
+      if (entries.length > 0) {
+        const activeDayTemp = entries.find(
+          (item: any) => item[0] === dropdownSelectedDateInfoBoard.value
+        );
+        setActiveDayInfoBoard(activeDayTemp);
       }
-    } else if (dropdownSelectedIntervals.value === 'monthly') {
-      if (getAllDataMonthly.status === 'successful') {
-        const y = entriesMonthly.map((item: any) => {
-          const labels: any = [];
-          const dataSets: any = [];
-          labels.push(item[0]);
-          //
-          const arrayOfMillisecs: any = [];
-          // console.log('item[1]', item[1]);
-
-          Object.entries(item[1]).forEach((item2: any) => {
-            arrayOfMillisecs.push(
-              item2[1].lastMilliSecs + item2[1].milliSecsFromLastHour
-            );
-          });
-          const sum2 = arrayOfMillisecs.reduce(
-            (accumulator: number, currentValue: number) =>
-              accumulator + currentValue,
-            0
-          );
-          const average2 = sum2 / arrayOfMillisecs.length;
-          dataSets.push(average2);
-
-          const obj = {
-            labels: labels[0],
-            dataSets: dataSets[0] / (1000 * 60 * 60),
-          };
-          // console.log('obj', obj);
-
-          return obj;
-        });
-        // console.log('y', y);
-        y.forEach((item: any) => {
-          barchartDataAverage.labels.push(item.labels);
-          barchartDataAverage.datasets[0].data.push(item.dataSets);
-          setBarchartDataAverage(barchartDataAverage);
-        });
+    } else if (dropdownSelectedIntervalsInfoBoard.value === 'monthly') {
+      if (entriesMonthly.length > 0) {
+        const activeMonthTemp = entriesMonthly.find(
+          (item: any) => item[0] === dropdownSelectedDateInfoBoard?.value
+        );
+        setActiveMonthInfoBoard(activeMonthTemp);
       }
     }
-  }, [getAllDataDaily, entries, entriesMonthly, dropdownSelectedIntervals]);
+  }, [dropdownSelectedDateInfoBoard, dropdownSelectedIntervalsInfoBoard]);
 
+  // top
   useEffect(() => {
-    if (dropdownSelectedIntervals.value === 'daily') {
-      if (activeDay?.length > 0) {
+    if (dropdownSelectedIntervalsInfoBoard.value === 'daily') {
+      if (activeDayInfoBoard?.length > 0) {
         const updateStateFunc = () => {
           const arrayOfMillisecs: any = [];
-          const x = activeDay[1];
+          const x = activeDayInfoBoard[1];
           const entries = Object.entries(x);
           entries.forEach((item: any) => {
             arrayOfMillisecs.push(
@@ -163,7 +152,7 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
         };
         updateStateFunc();
       }
-    } else if (dropdownSelectedIntervals.value === 'monthly') {
+    } else if (dropdownSelectedIntervalsInfoBoard.value === 'monthly') {
       if (activeMonth?.length > 0) {
         const updateStateFunc = () => {
           const arrayOfMillisecs: any = [];
@@ -194,253 +183,178 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
         updateStateFunc();
       }
     }
-  }, [activeDay, activeMonth, dropdownSelectedIntervals]);
-
-  useEffect(() => {
-    const barChartData = {
-      labels: [] as string[],
-      datasets: [
-        {
-          data: [] as number[],
-          backgroundColor: theme === 'light' ? '#2764FF' : '#E5A889',
-          borderColor: '#2764FF',
-          fill: false,
-          lineTension: 0.4,
-          radius: 0,
-        },
-      ],
-    };
-    const barchartDataTimelogs = {
-      labels: [] as string[],
-      datasets: [
-        {
-          data: [] as number[],
-          backgroundColor: theme === 'light' ? '#2764FF' : '#3C828A',
-          borderColor: '#2764FF',
-          fill: false,
-          lineTension: 0.4,
-          radius: 0,
-        },
-      ],
-    };
-    if (dropdownSelectedIntervals.value === 'daily') {
-      if (activeDay?.length > 0) {
-        const usersTemp = Object.entries(activeDay?.[1]);
-        console.log('usersTemp daily', usersTemp);
-        let labels: any = [];
-        let datasets: any = [];
-        let labelsTimelog: any = [];
-        let datasetsTimelog: any = [];
-        usersTemp.forEach((item: any) => {
-          labels.push(item[0].split('@')[0]);
-          labelsTimelog.push(item[0].split('@')[0]);
-          datasets.push(
-            (item[1].lastMilliSecs + item[1].milliSecsFromLastHour) /
-              (1000 * 60 * 60)
-          );
-          datasetsTimelog.push(item[1].supportAction.length);
-        });
-        barChartData.labels = labels;
-        barChartData.datasets[0].data = datasets;
-        // timelogs
-        barchartDataTimelogs.labels = labelsTimelog;
-        barchartDataTimelogs.datasets[0].data = datasetsTimelog;
-        setBarchartData(barChartData);
-        setBarchartDataTimelogs(barchartDataTimelogs);
-      }
-    } else if (dropdownSelectedIntervals.value === 'monthly') {
-      if (activeMonth?.length > 0) {
-        const usersTemp = Object.entries(activeMonth?.[1]);
-        console.log('usersTemp monthly', usersTemp);
-        let labels: any = [];
-        let datasets: any = [];
-        let labelsTimelog: any = [];
-        let datasetsTimelog: any = [];
-        usersTemp.forEach((item: any) => {
-          labels.push(item[0].split('@')[0]);
-          labelsTimelog.push(item[0].split('@')[0]);
-          datasets.push(
-            (item[1].lastMilliSecs + item[1].milliSecsFromLastHour) /
-              (1000 * 60 * 60)
-          );
-          datasetsTimelog.push(item[1].timeLogs.length);
-        });
-        barChartData.labels = labels;
-        barChartData.datasets[0].data = datasets;
-        // timelogs
-        barchartDataTimelogs.labels = labelsTimelog;
-        barchartDataTimelogs.datasets[0].data = datasetsTimelog;
-        setBarchartData(barChartData);
-        setBarchartDataTimelogs(barchartDataTimelogs);
-      }
-    }
-  }, [activeDay, activeMonth, dropdownSelectedIntervals]);
-
-  // console.log('barchartData', barchartData);
-  // console.log('barchartDataTimelogs', barchartDataTimelogs);
-  // console.log('getAllDataDaily', getAllDataDaily);
-  // new Productivity log
-  // intervals
-  const [
-    showDropdownIntervalsProductivityLog,
-    setShowDropdownIntervalsProductivityLog,
-  ] = useState(false);
-  const [
-    dropdownOptionsIntervalsProductivityLog,
-    setDropdownOptionsIntervalsProductivityLog,
-  ] = useState([
-    { title: 'Daily', value: 'daily' },
-    { title: 'Monthly', value: 'monthly' },
+  }, [
+    activeDayInfoBoard,
+    activeMonthInfoBoard,
+    dropdownSelectedIntervalsInfoBoard,
   ]);
-  const [
-    dropdownSelectedIntervalsProductivityLog,
-    setDropdownSelectedIntervalsProductivityLog,
-  ] = useState({
-    title: 'Daily',
-    value: 'daily',
-  });
-  // date
-  const [showDropdownDateProductivityLog, setShowDropdownDateProductivityLog] =
-    useState(false);
-  const [
-    dropdownOptionsDateProductivityLog,
-    setDropdownOptionsDateProductivityLog,
-  ] = useState<any>([]);
-  const [
-    dropdownSelectedDateProductivityLog,
-    setDropdownSelectedDateProductivityLog,
-  ] = useState<any>({});
+
 
   return (
     <div className='overview-component'>
-      <div className='stats-wrapper'>
-        <div className='stats'>
-          <div className='stat'>
-            {/* <p className='title'>All teammates</p> */}
-            <p className='title'>Total teamates</p>
-            <p className='info'>Total Teammates</p>
-            <div className='details'>
-              <div className='detail'>
-                <div className='value'>{totalTeammatesSupport}</div>
-                {/* <div className='text'>
-                  <Pill text='Active' variant='success' icon />
-                </div> */}
-              </div>
-            </div>
-          </div>
-          <div className='stat stat-2'>
-            {/* <p className='title'>All teammates</p> */}
-            <p className='title'>Active teamates</p>
-            <p className='info'>Signed in</p>
-            <div className='details'>
-              <div className='detail'>
-                <div className='value'>
-                  {getAllDataDaily.status === 'base' ||
-                  getAllDataDaily.status === 'loading' ||
-                  getAllDataMonthly.status === 'base' ||
-                  getAllDataMonthly.status === 'loading' ? (
-                    <>
-                      <SingleLineLoader />
-                    </>
-                  ) : getAllDataDaily.status === 'successful' ||
-                    getAllDataMonthly.status === 'successful' ? (
-                    <>
-                      {dropdownSelectedIntervals.value === 'daily'
-                        ? activeTeamMatesDaily
-                        : activeTeamMatesMonthly}
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-                <div className='text'>
-                  <Pill
-                    text={
-                      dropdownSelectedIntervals.value === 'daily'
-                        ? 'Signed in today'
-                        : 'Signed in this month'
-                    }
-                    variant='success'
-                    icon
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className='stat'>
-            <p className='title'>Inactive</p>
-            <p className='info'>Inactive</p>
-            <div className='details'>
-              <div className='detail'>
-                <div className='value'>
-                  {getAllDataDaily.status === 'base' ||
-                  getAllDataDaily.status === 'loading' ||
-                  getAllDataMonthly.status === 'base' ||
-                  getAllDataMonthly.status === 'loading' ? (
-                    <>
-                      <SingleLineLoader />
-                    </>
-                  ) : getAllDataDaily.status === 'successful' ||
-                    getAllDataMonthly.status === 'successful' ? (
-                    <>
-                      {dropdownSelectedIntervals.value === 'daily' && (
-                        <>
-                          {totalTeammatesSupport - Number(activeTeamMatesDaily)}
-                        </>
-                      )}
-                      {dropdownSelectedIntervals.value === 'monthly' && (
-                        <>
-                          {totalTeammatesSupport -
-                            Number(activeTeamMatesMonthly)}
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-                <div className='text'>
-                  <Pill text='Not signed in' variant='danger' icon />
-                </div>
-              </div>
-            </div>
+      <div className='stats-con'>
+        <div className='filters-con'>
+          <div className='filters-wrapper'>
+            <Dropdown
+              showDropdown={showDropdownIntervalsInfoBoard}
+              setShowDropdown={setShowDropdownIntervalsInfoBoard}
+              dropdownSelected={dropdownSelectedIntervalsInfoBoard}
+              setDropdownSelected={setDropdownSelectedIntervalsInfoBoard}
+              dropdownOptions={dropdownOptionsIntervalsInfoBoard}
+            >
+              <Filter
+                setShowDropdown={setShowDropdownIntervalsInfoBoard}
+                dropdownSelected={dropdownSelectedIntervalsInfoBoard}
+              />
+            </Dropdown>
+            {dropdownOptionsDateInfoBoard.length > 0 && (
+              <Dropdown
+                showDropdown={showDropdownDateInfoBoard}
+                setShowDropdown={setShowDropdownDateInfoBoard}
+                dropdownSelected={dropdownSelectedDateInfoBoard}
+                setDropdownSelected={setDropdownSelectedDateInfoBoard}
+                dropdownOptions={dropdownOptionsDateInfoBoard}
+              >
+                <Filter
+                  setShowDropdown={setShowDropdownDateInfoBoard}
+                  dropdownSelected={dropdownSelectedDateInfoBoard}
+                />
+              </Dropdown>
+            )}
           </div>
         </div>
-        <div className='estimate'>
-          <div className='stat'>
-            <p className='title'>
-              {dropdownSelectedIntervals.value === 'daily'
-                ? 'Daily time estimate'
-                : 'Monthly time estimate'}
-            </p>
-            <p className='info'>
-              {dropdownSelectedIntervals.value === 'daily'
-                ? 'Daily time estimate'
-                : 'Monthly time estimate'}
-            </p>
-            <div className='details'>
-              <div className='detail'>
-                <div className='value'>
-                  {getAllDataDaily.status === 'base' ||
-                  getAllDataDaily.status === 'loading' ||
-                  getAllDataMonthly.status === 'base' ||
-                  getAllDataMonthly.status === 'loading' ? (
-                    <>
-                      <SingleLineLoader />
-                    </>
-                  ) : getAllDataDaily.status === 'successful' ||
-                    getAllDataMonthly.status === 'successful' ? (
-                    <>
-                      {dropdownSelectedIntervals.value === 'daily'
-                        ? dailyTimeEstimate
-                        : monthlyTimeEstimate}
-                    </>
-                  ) : (
-                    <></>
-                  )}
+        <div className='stats-wrapper'>
+          <div className='stats'>
+            <div className='stat'>
+              {/* <p className='title'>All teammates</p> */}
+              <p className='title'>Total teamates</p>
+              <p className='info'>Total Teammates</p>
+              <div className='details'>
+                <div className='detail'>
+                  <div className='value'>{totalTeammatesSupport}</div>
+                  {/* <div className='text'>
+                  <Pill text='Active' variant='success' icon />
+                </div> */}
                 </div>
-                <div className='text'>
-                  <Pill text='Across all teammates ' variant='info' icon />
+              </div>
+            </div>
+            <div className='stat stat-2'>
+              {/* <p className='title'>All teammates</p> */}
+              <p className='title'>Active teamates</p>
+              <p className='info'>Signed in</p>
+              <div className='details'>
+                <div className='detail'>
+                  <div className='value'>
+                    {getAllDataDaily.status === 'base' ||
+                    getAllDataDaily.status === 'loading' ||
+                    getAllDataMonthly.status === 'base' ||
+                    getAllDataMonthly.status === 'loading' ? (
+                      <>
+                        <SingleLineLoader />
+                      </>
+                    ) : getAllDataDaily.status === 'successful' ||
+                      getAllDataMonthly.status === 'successful' ? (
+                      <>
+                        {dropdownSelectedIntervalsInfoBoard.value === 'daily'
+                          ? activeTeamMatesDaily
+                          : activeTeamMatesMonthly}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div className='text'>
+                    <Pill
+                      text={
+                        dropdownSelectedIntervalsInfoBoard.value === 'daily'
+                          ? 'Signed in today'
+                          : 'Signed in this month'
+                      }
+                      variant='success'
+                      icon
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='stat'>
+              <p className='title'>Inactive</p>
+              <p className='info'>Inactive</p>
+              <div className='details'>
+                <div className='detail'>
+                  <div className='value'>
+                    {getAllDataDaily.status === 'base' ||
+                    getAllDataDaily.status === 'loading' ||
+                    getAllDataMonthly.status === 'base' ||
+                    getAllDataMonthly.status === 'loading' ? (
+                      <>
+                        <SingleLineLoader />
+                      </>
+                    ) : getAllDataDaily.status === 'successful' ||
+                      getAllDataMonthly.status === 'successful' ? (
+                      <>
+                        {dropdownSelectedIntervalsInfoBoard.value ===
+                          'daily' && (
+                          <>
+                            {totalTeammatesSupport -
+                              Number(activeTeamMatesDaily)}
+                          </>
+                        )}
+                        {dropdownSelectedIntervalsInfoBoard.value ===
+                          'monthly' && (
+                          <>
+                            {totalTeammatesSupport -
+                              Number(activeTeamMatesMonthly)}
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div className='text'>
+                    <Pill text='Not signed in' variant='danger' icon />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='estimate'>
+            <div className='stat'>
+              <p className='title'>
+                {dropdownSelectedIntervalsInfoBoard.value === 'daily'
+                  ? 'Daily time estimate'
+                  : 'Monthly time estimate'}
+              </p>
+              <p className='info'>
+                {dropdownSelectedIntervalsInfoBoard.value === 'daily'
+                  ? 'Daily time estimate'
+                  : 'Monthly time estimate'}
+              </p>
+              <div className='details'>
+                <div className='detail'>
+                  <div className='value'>
+                    {getAllDataDaily.status === 'base' ||
+                    getAllDataDaily.status === 'loading' ||
+                    getAllDataMonthly.status === 'base' ||
+                    getAllDataMonthly.status === 'loading' ? (
+                      <>
+                        <SingleLineLoader />
+                      </>
+                    ) : getAllDataDaily.status === 'successful' ||
+                      getAllDataMonthly.status === 'successful' ? (
+                      <>
+                        {dropdownSelectedIntervalsInfoBoard.value === 'daily'
+                          ? dailyTimeEstimate
+                          : monthlyTimeEstimate}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div className='text'>
+                    <Pill text='Across all teammates ' variant='info' icon />
+                  </div>
                 </div>
               </div>
             </div>
@@ -448,313 +362,24 @@ function Overview({ dropdownSelectedIntervals }: IProps) {
         </div>
       </div>
       <div className='charts'>
-        <div className='chart-con'>
-          <div className='title-wrapper'>
-            <p className='title'>Productivity Chart</p>
-            <div className='filters-wrapper'>
-              <Dropdown
-                showDropdown={showDropdownIntervalsProductivityLog}
-                setShowDropdown={setShowDropdownIntervalsProductivityLog}
-                dropdownSelected={dropdownSelectedIntervalsProductivityLog}
-                setDropdownSelected={
-                  setDropdownSelectedIntervalsProductivityLog
-                }
-                dropdownOptions={dropdownOptionsIntervalsProductivityLog}
-              >
-                <Filter
-                  setShowDropdown={setShowDropdownIntervalsProductivityLog}
-                  dropdownSelected={dropdownSelectedIntervalsProductivityLog}
-                />
-              </Dropdown>
-              {dropdownOptionsDateProductivityLog.length > 0 && (
-                <Dropdown
-                  showDropdown={showDropdownDateProductivityLog}
-                  setShowDropdown={setShowDropdownDateProductivityLog}
-                  dropdownSelected={dropdownSelectedDateProductivityLog}
-                  setDropdownSelected={setDropdownSelectedDateProductivityLog}
-                  dropdownOptions={dropdownOptionsDateProductivityLog}
-                >
-                  <Filter
-                    setShowDropdown={setShowDropdownDateProductivityLog}
-                    dropdownSelected={dropdownSelectedDateProductivityLog}
-                  />
-                </Dropdown>
-              )}
-            </div>
-          </div>
-          <div className='charts-wrapper'>
-            <div className='chart'>
-              {getAllDataDaily.status === 'base' ||
-              getAllDataDaily.status === 'loading' ? (
-                <>Loading</>
-              ) : getAllDataDaily.status === 'successful' ? (
-                <>
-                  {barchartData.labels?.length > 0 && (
-                    <>
-                      {
-                        <Bar
-                          data={barchartData}
-                          options={{
-                            plugins: {
-                              legend: {
-                                display: false,
-                              },
-                              tooltip: {
-                                yAlign: 'bottom',
-                                titleColor: '#000',
-                                bodyColor: '#000',
-                                backgroundColor: 'whitesmoke',
-                                padding: 10,
-                              },
-                            },
-                            scales: {
-                              y: {
-                                border: {
-                                  display: false,
-                                },
-                                grid: {
-                                  display: false,
-                                },
-                                ticks: {
-                                  crossAlign: 'far',
-                                  padding: 10,
-                                  color: `${
-                                    theme === 'light' ? '#1C2127' : '#1C2127'
-                                  }`,
-                                  font: {
-                                    size: 14,
-                                  },
-                                },
-                              },
-                              x: {
-                                border: {
-                                  display: false,
-                                },
-                                ticks: {
-                                  color: `${
-                                    theme === 'light' ? '#1C2127' : '#1C2127'
-                                  }`,
-                                },
-                                grid: {
-                                  display: false,
-                                  color: `${
-                                    theme === 'light' ? '#F1F1F1' : '#373B3F'
-                                  }`,
-                                },
-                              },
-                            },
-                            layout: {
-                              padding: {
-                                top: 30,
-                                left: 20,
-                              },
-                            },
-                            indexAxis: 'x',
-                            responsive: true,
-                            maintainAspectRatio: false,
-                          }}
-                          // height={360}
-                        />
-                      }
-                    </>
-                  )}
-                </>
-              ) : (
-                <></>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className='chart-con timelogs'>
-          <p className='title'>Timelogs Chart</p>
-          <div className='charts-wrapper'>
-            {/* <div className='legend-wrapper'>
-              <div className='legend'>
-                <div className='color online'></div>
-                <p className='text'>Online</p>
-              </div>
-              <div className='legend'>
-                <div className='color away'></div>
-                <p className='text'>Away</p>
-              </div>
-            </div> */}
-            <div className='chart'>
-              {getAllDataDaily.status === 'base' ||
-              getAllDataDaily.status === 'loading' ? (
-                <>Loading</>
-              ) : getAllDataDaily.status === 'successful' ? (
-                <>
-                  {barchartDataTimelogs.labels?.length > 0 && (
-                    <>
-                      {
-                        <Bar
-                          data={barchartDataTimelogs}
-                          options={{
-                            plugins: {
-                              legend: {
-                                display: false,
-                              },
-                              tooltip: {
-                                yAlign: 'bottom',
-                                titleColor: '#000',
-                                bodyColor: '#000',
-                                backgroundColor: 'whitesmoke',
-                                padding: 10,
-                              },
-                            },
-                            scales: {
-                              y: {
-                                border: {
-                                  display: false,
-                                },
-                                grid: {
-                                  display: false,
-                                },
-                                ticks: {
-                                  crossAlign: 'far',
-                                  padding: 10,
-                                  color: `${
-                                    theme === 'light' ? '#1C2127' : '#1C2127'
-                                  }`,
-                                  font: {
-                                    size: 14,
-                                  },
-                                },
-                              },
-                              x: {
-                                border: {
-                                  display: false,
-                                },
-                                ticks: {
-                                  color: `${
-                                    theme === 'light' ? '#1C2127' : '#1C2127'
-                                  }`,
-                                },
-                                grid: {
-                                  display: false,
-                                  color: `${
-                                    theme === 'light' ? '#F1F1F1' : '#373B3F'
-                                  }`,
-                                },
-                              },
-                            },
-                            layout: {
-                              padding: {
-                                top: 30,
-                                left: 20,
-                              },
-                            },
-                            indexAxis: 'x',
-                            responsive: true,
-                            maintainAspectRatio: false,
-                          }}
-                          // height={360}
-                        />
-                      }
-                    </>
-                  )}
-                </>
-              ) : (
-                <></>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className='chart-con timelogs'>
-          <p className='title'>Average Chart</p>
-          <div className='charts-wrapper'>
-            {/* <div className='legend-wrapper'>
-              <div className='legend'>
-                <div className='color online'></div>
-                <p className='text'>Online</p>
-              </div>
-              <div className='legend'>
-                <div className='color away'></div>
-                <p className='text'>Away</p>
-              </div>
-            </div> */}
-            <div className='chart'>
-              {getAllDataDaily.status === 'base' ||
-              getAllDataDaily.status === 'loading' ? (
-                <>Loading</>
-              ) : getAllDataDaily.status === 'successful' ? (
-                <>
-                  {barchartDataAverage.labels?.length > 0 && (
-                    <>
-                      {
-                        <Bar
-                          data={barchartDataAverage}
-                          options={{
-                            plugins: {
-                              legend: {
-                                display: false,
-                              },
-                              tooltip: {
-                                yAlign: 'bottom',
-                                titleColor: '#000',
-                                bodyColor: '#000',
-                                backgroundColor: 'whitesmoke',
-                                padding: 10,
-                              },
-                            },
-                            scales: {
-                              y: {
-                                border: {
-                                  display: false,
-                                },
-                                grid: {
-                                  display: false,
-                                },
-                                ticks: {
-                                  crossAlign: 'far',
-                                  padding: 10,
-                                  color: `${
-                                    theme === 'light' ? '#1C2127' : '#1C2127'
-                                  }`,
-                                  font: {
-                                    size: 14,
-                                  },
-                                },
-                              },
-                              x: {
-                                border: {
-                                  display: false,
-                                },
-                                ticks: {
-                                  color: `${
-                                    theme === 'light' ? '#1C2127' : '#1C2127'
-                                  }`,
-                                },
-                                grid: {
-                                  display: false,
-                                  color: `${
-                                    theme === 'light' ? '#F1F1F1' : '#373B3F'
-                                  }`,
-                                },
-                              },
-                            },
-                            layout: {
-                              padding: {
-                                top: 30,
-                                left: 20,
-                              },
-                            },
-                            indexAxis: 'x',
-                            responsive: true,
-                            maintainAspectRatio: false,
-                          }}
-                          // height={360}
-                        />
-                      }
-                    </>
-                  )}
-                </>
-              ) : (
-                <></>
-              )}
-            </div>
-          </div>
-        </div>
+        <Productivity
+          dropdownOptionsDateDaily={dropdownOptionsDateDaily}
+          setDropdownOptionsDateDaily={setDropdownOptionsDateDaily}
+          dropdownOptionsDateMonthly={dropdownOptionsDateMonthly}
+          setDropdownOptionsDateMonthly={setDropdownOptionsDateMonthly}
+        />
+        <Timelogs
+          dropdownOptionsDateDaily={dropdownOptionsDateDaily}
+          setDropdownOptionsDateDaily={setDropdownOptionsDateDaily}
+          dropdownOptionsDateMonthly={dropdownOptionsDateMonthly}
+          setDropdownOptionsDateMonthly={setDropdownOptionsDateMonthly}
+        />
+        <Average
+          dropdownOptionsDateDaily={dropdownOptionsDateDaily}
+          setDropdownOptionsDateDaily={setDropdownOptionsDateDaily}
+          dropdownOptionsDateMonthly={dropdownOptionsDateMonthly}
+          setDropdownOptionsDateMonthly={setDropdownOptionsDateMonthly}
+        />
       </div>
     </div>
   );

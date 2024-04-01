@@ -31,9 +31,21 @@
         line-height: 24px; /* 133.333% */
       }
     }
-    .search-wrapper {
-      width: 36.3rem;
-      height: 4rem;
+    .filters-con {
+      display: flex;
+      align-items: center;
+      column-gap: 2rem;
+      .filters-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        column-gap: 2rem;
+      }
+
+      .search-wrapper {
+        width: 36.3rem;
+        height: 4rem;
+      }
     }
     .filters-wrapper {
       display: flex;
@@ -109,7 +121,7 @@
           }
           .td-2,
           .td-3 {
-            width: 30%;
+            width: 20%;
             // background-color: blue;
             .td-content {
               display: flex;

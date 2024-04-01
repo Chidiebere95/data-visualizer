@@ -12,11 +12,25 @@ import moment from 'moment';
 import { AppContext } from '../../../../context/Context';
 import { RootState } from '../../../../store/store';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Dropdown from '../dropdown/Dropdown';
+import Filter from '../filter/Filter';
 interface IProps {
   staff?: any;
   setActiveTab?: React.Dispatch<React.SetStateAction<string>>;
+
+  dropdownOptionsDateDaily: any;
+  setDropdownOptionsDateDaily: React.Dispatch<any>;
+  dropdownOptionsDateMonthly: any;
+  setDropdownOptionsDateMonthly: React.Dispatch<any>;
 }
-function OverviewTeammate({ staff, setActiveTab }: IProps) {
+function OverviewTeammate({
+  staff,
+  setActiveTab,
+  dropdownOptionsDateDaily,
+  setDropdownOptionsDateDaily,
+  dropdownOptionsDateMonthly,
+  setDropdownOptionsDateMonthly,
+}: IProps) {
   const navigate = useNavigate();
   const { theme } = useContext(AppContext);
   const { entries, activeDay, entriesMonthly } = useSelector(
@@ -107,15 +121,15 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
   // new
   const [tableData, setTableData] = useState<Array<any>>([]);
 
-  console.log('staff', staff);
+  // console.log('staff', staff);
 
   const tempArray: any = [];
   const [activityLogTableData, setActivityLogTableData] = useState<any>([]);
   useEffect(() => {
     if (tempArray.length > 0) {
-      console.log('staff', staff);
+      // console.log('staff', staff);
       const activityLogTableDataTemp = tempArray.map((item: any) => {
-        console.log('item##########', item);
+        // console.log('item##########', item);
 
         const minTime = item.supportAction[0].timeLog;
         const dateMinTime = moment(minTime);
@@ -152,33 +166,14 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
       setActivityLogTableData(activityLogTableDataTemp);
     }
   }, [tempArray.length]);
-  const [activitiesTableData, setActivitiesTableData] = useState<any>();
-  useEffect(() => {
-    if (tempArray.length > 0) {
-      const activitiesTableDataTemp = tempArray.map((item: any) => {
-        return {
-          date: item.maxTime.split('T')[0],
-          supportAction: item.supportAction,
-        };
-      });
-      console.log('activitiesTableDataTemp', activitiesTableDataTemp);
-      const activeDayData = activitiesTableDataTemp.find(
-        (item: any) => item.date === activeDay[0]
-      );
-      setActivitiesTableData(activeDayData);
-      console.log('activeDayData', activeDayData);
-    }
-  }, [tempArray.length, activeDay]);
-  // added
 
-  //
   const entriesDailyData = Object.entries(getAllDataDaily.data);
-  console.log('entriesDailyData', entriesDailyData);
+  // console.log('entriesDailyData', entriesDailyData);
   entriesDailyData.forEach((item: any) => {
     const usersData = Object.entries(item[1]);
 
     // console.log('usersdata', usersData);
-    console.log('usersdata[0]', usersData[0]);
+    // console.log('usersdata[0]', usersData[0]);
     usersData.forEach((userData: any) => {
       if (userData[0] === staff?.[0]) {
         // console.log('usersdata[0][1]', usersData[0][1]);
@@ -194,7 +189,7 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
       datasets: [
         {
           data: [] as number[],
-          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          backgroundColor: theme === 'light' ? '#2764FF' : '#E5A889',
           borderColor: '#2764FF',
           fill: false,
           lineTension: 0.4,
@@ -207,7 +202,7 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
       datasets: [
         {
           data: [] as number[],
-          backgroundColor: theme === 'light' ? '#2764FF' : '#85D1F0',
+          backgroundColor: theme === 'light' ? '#2764FF' : '#3C828A',
           borderColor: '#2764FF',
           fill: false,
           lineTension: 0.4,
@@ -231,13 +226,141 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
       barChartDataTimelogs.labels.push(labelTimelogs);
       barChartDataTimelogs.datasets[0].data.push(dataSetsTimeLogs);
     });
-    console.log('barchartData', barchartData);
-    console.log('barChartDataTimelogs', barChartDataTimelogs);
+    // console.log('barchartData', barchartData);
+    // console.log('barChartDataTimelogs', barChartDataTimelogs);
     setBarchartData(barchartData);
     setBarchartDataTimelogs(barChartDataTimelogs);
   }, [tempArray.length]);
   // console.log('barchartData', barchartData);
-  console.log('activitiesTableData', activitiesTableData);
+  // console.log('activitiesTableData', activitiesTableData);
+
+  // new
+  const [showDropdownIntervalsTeammate, setShowDropdownIntervalsTeammate] =
+    useState(false);
+  const [
+    dropdownOptionsIntervalsTeammate,
+    setDropdownOptionsIntervalsTeammate,
+  ] = useState([
+    { title: 'Daily', value: 'daily' },
+    { title: 'Monthly', value: 'monthly' },
+  ]);
+  const [
+    dropdownSelectedIntervalsTeammate,
+    setDropdownSelectedIntervalsTeammate,
+  ] = useState({
+    title: 'Daily',
+    value: 'daily',
+  });
+  // date
+  const [showDropdownDateTeammate, setShowDropdownDateTeammate] =
+    useState(false);
+  const [dropdownOptionsDateTeammate, setDropdownOptionsDateTeammate] =
+    useState<any>([]);
+  const [dropdownSelectedDateTeammate, setDropdownSelectedDateTeammate] =
+    useState<any>({});
+  const [activeDayTeammate, setActiveDayTeammate] = useState<any>([]);
+  const [activeMonthTeammate, setActiveMonthTeammate] = useState<any>([]);
+  // console.log('dropdownSelectedDateTeammate', dropdownSelectedDateTeammate);
+  // console.log('dropdownOptionsDateTeammate', dropdownOptionsDateTeammate);
+  // console.log(
+  //   'dropdownSelectedIntervalsTeammate',
+  //   dropdownSelectedIntervalsTeammate
+  // );
+  // console.log('dropdownOptionsDateDaily', dropdownOptionsDateDaily);
+
+  useEffect(() => {
+    if (dropdownSelectedIntervalsTeammate.value === 'daily') {
+      setDropdownSelectedDateTeammate(
+        dropdownOptionsDateDaily[dropdownOptionsDateDaily.length - 1]
+      );
+      setDropdownOptionsDateTeammate(dropdownOptionsDateDaily);
+    } else {
+      setDropdownSelectedDateTeammate(
+        dropdownOptionsDateMonthly[dropdownOptionsDateMonthly.length - 1]
+      );
+      setDropdownOptionsDateTeammate(dropdownOptionsDateMonthly);
+    }
+  }, [dropdownSelectedIntervalsTeammate]);
+  useEffect(() => {
+    if (dropdownSelectedIntervalsTeammate.value === 'daily') {
+      if (entries.length > 0) {
+        const activeDayTemp = entries.find(
+          (item: any) => item[0] === dropdownSelectedDateTeammate.value
+        );
+        setActiveDayTeammate(activeDayTemp);
+      }
+    } else if (dropdownSelectedIntervalsTeammate.value === 'monthly') {
+      if (entriesMonthly.length > 0) {
+        const activeMonthTemp = entriesMonthly.find(
+          (item: any) => item[0] === dropdownSelectedDateTeammate.value
+        );
+        setActiveMonthTeammate(activeMonthTemp);
+      }
+    }
+  }, [
+    dropdownSelectedDateTeammate,
+    dropdownSelectedIntervalsTeammate,
+    entries,
+    entriesDailyData,
+  ]);
+  useEffect(() => {
+    if (dropdownSelectedIntervalsTeammate.value === 'daily') {
+      if (activeDayTeammate?.length! > 0) {
+        const data = activeDayTeammate[1];
+        const entries = Object.entries(data);
+        setTableData(entries);
+      }
+    } else if (dropdownSelectedIntervalsTeammate.value === 'monthly') {
+      if (activeMonthTeammate?.length! > 0) {
+        const data = activeMonthTeammate[1];
+        const entries = Object.entries(data);
+        setTableData(entries);
+      }
+    }
+  }, [activeDayTeammate, activeMonthTeammate]);
+
+  //
+  const [activitiesTableData, setActivitiesTableData] = useState<any>();
+  const [activitiesTableData2, setActivitiesTableData2] = useState<any>();
+
+  useEffect(() => {
+    if (tempArray.length > 0) {
+      // console.log('tempArray', tempArray);
+      // console.log('dropdownSelectedDateTeammate', dropdownSelectedDateTeammate);
+      const activeItem = tempArray.find(
+        (item: any) =>
+          item.maxTime.split('T')[0] === dropdownSelectedDateTeammate.value
+      );
+      console.log('activeItem', activeItem);
+
+      const activitiesTableDataTemp = tempArray.map((item: any) => {
+        return {
+          date: item.maxTime.split('T')[0],
+          supportAction: item.supportAction,
+        };
+      });
+      setActivitiesTableData2(activeItem);
+      // const activitiesTableDataTemp2 = activeItem?.supportAction.map((item: any) => {
+      //   return {
+      //     date: item.maxTime.split('T')[0],
+      //     supportAction: item.supportAction,
+      //   };
+      // });
+      const activeDayData = activitiesTableDataTemp.find(
+        (item: any) => item.date === activeDay[0]
+      );
+      setActivitiesTableData(activeDayData);
+      // console.log('activitiesTableDataTemp', activitiesTableDataTemp);
+
+      // console.log('activeDayData', activeDayData);
+    }
+  }, [
+    tempArray.length,
+    activeDay,
+    dropdownSelectedDateTeammate,
+    dropdownSelectedIntervalsTeammate,
+  ]);
+  console.log('active item', activitiesTableData2);
 
   return (
     <div className='overview-teammate-component'>
@@ -321,7 +444,7 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
                               grid: {
                                 display: false,
                                 color: `${
-                                  theme === 'light' ? '#F1F1F1' : '#373B3F'
+                                  theme === 'light' ? '#E5A889' : '#373B3F'
                                 }`,
                               },
                             },
@@ -405,7 +528,7 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
                             grid: {
                               display: false,
                               color: `${
-                                theme === 'light' ? '#F1F1F1' : '#373B3F'
+                                theme === 'light' ? '#E5A889' : '#E5A889'
                               }`,
                             },
                           },
@@ -432,9 +555,11 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
         </div>
       </section>
       <div className='activity-log'>
-        <section className='header'>
-          <p className='title'>Activity log</p>
-        </section>
+        <div className='filters-con'>
+          <section className='header'>
+            <p className='title'>Activity log</p>
+          </section>
+        </div>
         <div className='table-wrapper'>
           <div className='table'>
             <table border={1}>
@@ -465,10 +590,41 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
           </div>
         </div>
       </div>
-      <div className='activity-log'>
-        <section className='header'>
-          <p className='title'>Activities</p>
-        </section>
+      {/* activities */}
+      <div className='activity-log activities '>
+        <div className='filters-con'>
+          <div className='header'>
+            <p className='title section-title'>Activities</p>
+          </div>
+          <div className='filters-wrapper'>
+            {/* <Dropdown
+              showDropdown={showDropdownIntervalsTeammate}
+              setShowDropdown={setShowDropdownIntervalsTeammate}
+              dropdownSelected={dropdownSelectedIntervalsTeammate}
+              setDropdownSelected={setDropdownSelectedIntervalsTeammate}
+              dropdownOptions={dropdownOptionsIntervalsTeammate}
+            >
+              <Filter
+                setShowDropdown={setShowDropdownIntervalsTeammate}
+                dropdownSelected={dropdownSelectedIntervalsTeammate}
+              />
+            </Dropdown> */}
+            {dropdownOptionsDateTeammate.length > 0 && (
+              <Dropdown
+                showDropdown={showDropdownDateTeammate}
+                setShowDropdown={setShowDropdownDateTeammate}
+                dropdownSelected={dropdownSelectedDateTeammate}
+                setDropdownSelected={setDropdownSelectedDateTeammate}
+                dropdownOptions={dropdownOptionsDateTeammate}
+              >
+                <Filter
+                  setShowDropdown={setShowDropdownDateTeammate}
+                  dropdownSelected={dropdownSelectedDateTeammate}
+                />
+              </Dropdown>
+            )}
+          </div>
+        </div>
         <div className='table-wrapper'>
           <div className='table'>
             <table border={1}>
@@ -481,9 +637,9 @@ function OverviewTeammate({ staff, setActiveTab }: IProps) {
                 </tr>
               </thead>
               <tbody>
-                {activitiesTableData && (
+                {activitiesTableData2 && (
                   <>
-                    {activitiesTableData.supportAction.map(
+                    {activitiesTableData2.supportAction.map(
                       (item: any, index: number) => {
                         const date = moment(item.timeLog);
                         const formattedTime = date.format('hh:mm a');

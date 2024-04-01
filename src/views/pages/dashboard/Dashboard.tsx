@@ -43,71 +43,73 @@ function Dashboard() {
   // date
   const [showDropdownDate, setShowDropdownDate] = useState(false);
   const [dropdownOptionsDate, setDropdownOptionsDate] = useState<any>([]);
-  const [dropdownOptionsDateDaily, setDropdownOptionsDateDaily] = useState<any>([]);
-  const [dropdownOptionsDateMonthly, setDropdownOptionsDateMonthly] = useState<any>([]);
+  const [dropdownOptionsDateDaily, setDropdownOptionsDateDaily] = useState<any>(
+    []
+  );
+  const [dropdownOptionsDateMonthly, setDropdownOptionsDateMonthly] =
+    useState<any>([]);
   const [dropdownSelectedDate, setDropdownSelectedDate] = useState<any>({});
 
   // new
   useEffect(() => {
-    if (dropdownSelectedIntervals.value === 'daily') {
-      if (getAllDataDaily.status === 'successful') {
-        const data = getAllDataDaily.data;
-        const entries = Object.entries(data);
-        const last = entries[entries.length - 1];
-        dispatch(setEntries(entries));
-        dispatch(setActiveDay(last));
-      }
-    } else if (dropdownSelectedIntervals.value === 'monthly') {
-      if (getAllDataMonthly.status === 'successful') {
-        const data = getAllDataMonthly.data;
-        const entries = Object.entries(data);
-        const last = entries[entries.length - 1];
-        dispatch(setEntriesMonthly(entries));
-        dispatch(setActiveMonth(last));
-      }
+    if (getAllDataDaily.status === 'successful') {
+      const data = getAllDataDaily.data;
+      const entries = Object.entries(data);
+      const last = entries[entries.length - 1];
+      dispatch(setEntries(entries));
+      dispatch(setActiveDay(last));
     }
-  }, [getAllDataDaily, getAllDataMonthly, dropdownSelectedIntervals]);
+    if (getAllDataMonthly.status === 'successful') {
+      const data = getAllDataMonthly.data;
+      const entries = Object.entries(data);
+      const last = entries[entries.length - 1];
+      dispatch(setEntriesMonthly(entries));
+      dispatch(setActiveMonth(last));
+    }
+  }, [getAllDataDaily, getAllDataMonthly]);
 
   useEffect(() => {
-    if (dropdownSelectedIntervals.value === 'daily') {
-      if (entries.length > 0) {
-        const dropdownOptionsDateTemp = entries.map((item: any) => {
-          return { title: item[0], value: item[0].toLowerCase() };
-        });
-        setDropdownOptionsDate(dropdownOptionsDateTemp);
-        setDropdownSelectedDate(
-          dropdownOptionsDateTemp[dropdownOptionsDateTemp.length - 1]
-        );
-      }
-    } else if (dropdownSelectedIntervals.value === 'monthly') {
-      if (entriesMonthly.length > 0) {
-        const dropdownOptionsDateTemp = entriesMonthly.map((item: any) => {
-          return { title: item[0], value: item[0].toLowerCase() };
-        });
-        setDropdownOptionsDate(dropdownOptionsDateTemp);
-        setDropdownSelectedDate(
-          dropdownOptionsDateTemp[dropdownOptionsDateTemp.length - 1]
-        );
-      }
+    if (entries.length > 0) {
+      const dropdownOptionsDateTemp = entries.map((item: any) => {
+        return { title: item[0], value: item[0].toLowerCase() };
+      });
+      // setDropdownOptionsDate(dropdownOptionsDateTemp);
+      // setDropdownSelectedDate(
+      //   dropdownOptionsDateTemp[dropdownOptionsDateTemp.length - 1]
+      // );
+      // new
+      setDropdownOptionsDateDaily(dropdownOptionsDateTemp);
     }
-  }, [entries, entriesMonthly, dropdownSelectedIntervals]);
-  useEffect(() => {
-    if (dropdownSelectedIntervals.value === 'daily') {
-      if (entries.length > 0) {
-        const activeDayTemp = entries.find(
-          (item: any) => item[0] === dropdownSelectedDate.value
-        );
-        dispatch(setActiveDay(activeDayTemp));
-      }
-    } else if (dropdownSelectedIntervals.value === 'monthly') {
-      if (entriesMonthly.length > 0) {
-        const activeMonthTemp = entriesMonthly.find(
-          (item: any) => item[0] === dropdownSelectedDate.value
-        );
-        dispatch(setActiveMonth(activeMonthTemp));
-      }
+    if (entriesMonthly.length > 0) {
+      const dropdownOptionsDateTemp = entriesMonthly.map((item: any) => {
+        return { title: item[0], value: item[0].toLowerCase() };
+      });
+      // setDropdownOptionsDate(dropdownOptionsDateTemp);
+      // setDropdownSelectedDate(
+      //   dropdownOptionsDateTemp[dropdownOptionsDateTemp.length - 1]
+      // );
+      // new
+      setDropdownOptionsDateMonthly(dropdownOptionsDateTemp);
     }
-  }, [dropdownSelectedDate, dropdownSelectedIntervals]);
+  }, [entries, entriesMonthly]);
+
+  // useEffect(() => {
+  //   if (dropdownSelectedIntervals.value === 'daily') {
+  //     if (entries.length > 0) {
+  //       const activeDayTemp = entries.find(
+  //         (item: any) => item[0] === dropdownSelectedDate.value
+  //       );
+  //       dispatch(setActiveDay(activeDayTemp));
+  //     }
+  //   } else if (dropdownSelectedIntervals.value === 'monthly') {
+  //     if (entriesMonthly.length > 0) {
+  //       const activeMonthTemp = entriesMonthly.find(
+  //         (item: any) => item[0] === dropdownSelectedDate.value
+  //       );
+  //       dispatch(setActiveMonth(activeMonthTemp));
+  //     }
+  //   }
+  // }, [dropdownSelectedDate, dropdownSelectedIntervals]);
 
   useEffect(() => {
     dispatch(triggerGetAllDataDaily());
@@ -116,7 +118,7 @@ function Dashboard() {
 
   // console.log('activeDay', activeDay);
   // console.log('getAllDataMonthly', getAllDataMonthly);
-  console.log('dropdownSelectedIntervals', dropdownSelectedIntervals);
+  // console.log('dropdownSelectedIntervals', dropdownSelectedIntervals);
 
   return (
     <div className='dashboard-wrapper'>
@@ -147,7 +149,7 @@ function Dashboard() {
           </div>
           <div className='other'>
             {/* {activeTab === 'overview' && ( */}
-            <div className='filters-wrapper'>
+            {/* <div className='filters-wrapper'>
               <Dropdown
                 showDropdown={showDropdownIntervals}
                 setShowDropdown={setShowDropdownIntervals}
@@ -174,7 +176,7 @@ function Dashboard() {
                   />
                 </Dropdown>
               )}
-            </div>
+            </div> */}
             {/* )} */}
             {/* {activeTab === 'teammates' && (
               <div className='search-wrapper'>
@@ -184,10 +186,22 @@ function Dashboard() {
           </div>
         </div>
         {activeTab === 'overview' && (
-          <Overview dropdownSelectedIntervals={dropdownSelectedIntervals} />
+          <Overview
+            // dropdownSelectedIntervals={dropdownSelectedIntervals}
+            dropdownOptionsDateDaily={dropdownOptionsDateDaily}
+            setDropdownOptionsDateDaily={setDropdownOptionsDateDaily}
+            dropdownOptionsDateMonthly={dropdownOptionsDateMonthly}
+            setDropdownOptionsDateMonthly={setDropdownOptionsDateMonthly}
+          />
         )}
         {activeTab === 'teammates' && (
-          <Teammates dropdownSelectedIntervals={dropdownSelectedIntervals} />
+          <Teammates
+            // dropdownSelectedIntervals={dropdownSelectedIntervals}
+            dropdownOptionsDateDaily={dropdownOptionsDateDaily}
+            setDropdownOptionsDateDaily={setDropdownOptionsDateDaily}
+            dropdownOptionsDateMonthly={dropdownOptionsDateMonthly}
+            setDropdownOptionsDateMonthly={setDropdownOptionsDateMonthly}
+          />
         )}
       </div>
     </div>
